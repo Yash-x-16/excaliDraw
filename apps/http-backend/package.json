@@ -9,6 +9,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@repo/db":"*",
     "@repo/backend-common": "*",
     "@repo/typescript-config": "*",
     "@types/bcrypt": "^5.0.2",

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { client } from "@repo/db/client";
-import bcrypt, { hash } from "bcrypt"
-import jwt, { JwtPayload } from "jsonwebtoken"
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "@repo/backend-common/config";
 
 export const signup =async (req:Request,res:Response)=>{
@@ -77,7 +77,7 @@ export const signin = async (req:Request,res:Response)=>{
             return
         }else{
 
-           const token = jwt.sign(user?.id as Number ,JWT_SECRET)
+           const token = jwt.sign({ id: user?.id } ,JWT_SECRET)
             res.status(201).send({
                 message:"user logged in succesfully !!",
                 token
@@ -88,4 +88,18 @@ export const signin = async (req:Request,res:Response)=>{
             message:`the error is :\n${e}`
         })
     }
+}
+
+export const checkAuth = async (req:Request,res:Response)=>{
+    try{
+        res.status(201).send({
+            message:"good to go !!"
+        })
+    
+    }catch(e){
+        res.send({
+            message:`error in checkAuth function is \n${e}`
+        })
+    }
+    
 }
