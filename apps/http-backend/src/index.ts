@@ -1,7 +1,7 @@
 import express from "express" 
 import {JWT_SECRET} from "@repo/backend-common/config"
 import {client} from "@repo/db/client"
-
+import authRoutes from './routes/authRoutes.js'
 
     async function yash (){
         try{
@@ -27,6 +27,8 @@ import {client} from "@repo/db/client"
 const app = express() 
 
 app.use(express.json())
+app.use('/api/auth',authRoutes)
+
 
 console.log(JWT_SECRET)
 app.listen(3002,()=>{
