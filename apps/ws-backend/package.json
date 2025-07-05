@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@repo/typescript-config": "*",
+    "@repo/db": "*",
     "@types/jsonwebtoken": "^9.0.10",
     "jsonwebtoken": "^9.0.2"
   },
