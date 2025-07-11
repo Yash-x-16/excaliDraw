@@ -16,7 +16,8 @@ type Shapes={
 }
 
 
-export async function Drawing(canvas:HTMLCanvasElement ,roomId:string){
+export async function Drawing(canvas:HTMLCanvasElement ,roomId:string,socket:WebSocket
+){
 
 let existingShape:Shapes[]= await getExistingShapes(roomId)
 
@@ -27,6 +28,16 @@ let existingShape:Shapes[]= await getExistingShapes(roomId)
     if(!ctx){
         return
     }  
+
+    socket.onmessage=(event)=>{
+        const message = JSON.parse(event.data) 
+        if(message.type=="chat"){
+            const parshedShape = JSON.parse(message.message)
+            existingShape.push(parshedShape)
+            clearCanvas(existingShape,ctx,canvas)
+        }
+    }
+
 
     clearCanvas(existingShape,ctx,canvas)
     ctx.fillStyle = "rgba(0,0,0)"
@@ -42,14 +53,21 @@ let existingShape:Shapes[]= await getExistingShapes(roomId)
         clicked = false 
         const width = e.clientX - startX
         const height = e.clientY - startY
-
-        existingShape.push({
+        const shape:Shapes = 
+            {
             type:"react" ,
             height,
             width,
             x:startX , 
             y : startY
-        })
+        }
+
+        existingShape.push(shape)
+
+        socket.send(JSON.stringify({
+           type:"chat",
+           message:JSON.stringify({shape})
+        }))
     })
 
     canvas.addEventListener("mousemove",(e)=>{
