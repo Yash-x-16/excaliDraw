@@ -4,7 +4,7 @@ import { chatController } from "../controller/chatController.js"
 
 const router =  express.Router()
 
-router.get('/:roomId',Middleware,chatController)
+router.get('/:roomId',chatController)
 
 
 export default router 
