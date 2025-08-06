@@ -1,13 +1,48 @@
+"use client"
+import { useEffect, useRef } from "react"
 
-import { RoomCanvas } from "@/app/components/roomCanvas"
+ 
 
-export default async function CanvasPage ({params}:{
-    params:{
-        roomId:string
-    }
-}){
-    const roomId =(await params).roomId
-    console.log(roomId)
-   return <RoomCanvas roomId={roomId}/>
+export default function Canvas (){
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    useEffect(()=>{
+        const canvas = canvasRef.current 
+        if(!canvas){
+            return
+        }
+        const ctx = canvas.getContext("2d") 
+                if(!ctx){
+            return
+        } 
+        let startX = 0 ; 
+        let startY = 0 
+        let clicked = false
+       canvas.addEventListener('mousedown',(e)=>{
+        clicked = true
+        startX = e.clientX  ;
+        startY = e.clientY ;  
 
+       })
+       canvas.addEventListener('mouseup',(e)=>{
+        clicked = false ; 
+       })
+       
+       canvas.addEventListener('mousemove',(e)=>{
+        if(clicked){
+            const width = e.clientX - startX ; 
+            const height = e.clientY - startY ;  
+
+          ctx.clearRect(0,0,canvas.width,canvas.height)
+            ctx.fillStyle = 'rgba(0,0,0)' 
+          
+           ctx.fillRect(0,0,canvas.width,canvas.height)
+             ctx.strokeStyle='rgba(255,255,255)' ;
+            ctx.strokeRect(startX,startY,width,height) ; 
+        }
+       })
+        
+
+    },[canvasRef])
+
+    return <canvas height={window.innerHeight}ref={canvasRef} width={window.innerWidth}></canvas>
 }
