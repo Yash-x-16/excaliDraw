@@ -1,1 +1,0 @@
-{"root":["./src/index.ts","./src/controller/authcontroller.ts","./src/controller/chatcontroller.ts","./src/controller/roomcontroller.ts","./src/middleware/middleware.ts","./src/routes/authroutes.ts","./src/routes/chatroutes.ts","./src/routes/roomroutes.ts","./src/types/express/index.d.ts"],"version":"5.8.2"}
