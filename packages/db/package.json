@@ -12,7 +12,9 @@
   "type": "module",
   "exports": {
     "./db": "./src/index.ts",
-    "./userModel":"./src/models/userModel.ts"
+    "./userModel":"./src/models/userModel.ts",
+    "./chatModel":"./src/models/chatModel.ts",
+    "./roomModel":"./src/models/roomModel.ts"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*" ,

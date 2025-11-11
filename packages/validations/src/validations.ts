@@ -9,4 +9,8 @@ export const signupValidation = z.object({
 export const signinValidations = z.object({
     email:z.email() , 
     password:z.string()
+}) 
+
+export const createRoomValidations = z.object({
+    title:z.string().min(3).max(20) 
 })

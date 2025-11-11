@@ -27,7 +27,8 @@ wss.on("connection",(socket,request)=>{
     
   if(result){
 
-    socket.on("message",()=>{
+    socket.on("message",(message)=>{ 
+        
         socket.send("pong")
     })
 

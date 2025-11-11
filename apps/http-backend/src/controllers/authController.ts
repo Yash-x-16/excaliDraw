@@ -3,7 +3,7 @@ import {signinValidations, signupValidation} from "@repo/validations/validate"
 import {User}from"@repo/db/userModel"
 import bcrypt from "bcrypt"
 import jwt, { JwtPayload } from "jsonwebtoken"
-import { JWT_SECRET } from "@repo/backend-common/secret";
+import { DEFAULT_PROFILE_PICTURE, JWT_SECRET } from "@repo/backend-common/secret";
 
 export const signup = async(req:Request,res:Response)=>{
     const result = signupValidation.safeParse(req.body) 
@@ -16,7 +16,8 @@ export const signup = async(req:Request,res:Response)=>{
     }
 
     try {
-        const {email,username,password} = result.data 
+        const {email,username,password} = result.data  
+        const profilePicture = DEFAULT_PROFILE_PICTURE ; 
         const isUserAlreadyExist = await User.findOne({
             email
         })
@@ -32,7 +33,8 @@ export const signup = async(req:Request,res:Response)=>{
         const newUser = await User.create({
             username , 
             email , 
-            password:hashedPassword , 
+            password:hashedPassword ,  
+            profilePicture,
             createdAt:Date.now()
         })
         const token = jwt.sign({userId:newUser._id}as JwtPayload,JWT_SECRET as string) 

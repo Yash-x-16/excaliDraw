@@ -9,6 +9,10 @@ const userSchema = new Schema({
     password:{
         type:String , 
         required:true 
+    } ,  
+    profilePicture:{
+        type:String , 
+        required:true
     } , 
     email:{
         type:String ,
@@ -20,7 +24,11 @@ const userSchema = new Schema({
     },
     rooms:[{
         type:Schema.Types.ObjectId , 
-        ref:"room"
+        ref:"Room"
+    }],
+    chats:[{
+        type:Schema.Types.ObjectId , 
+        ref:"Chat" 
     }]
 })
 
