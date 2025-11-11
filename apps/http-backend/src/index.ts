@@ -1,6 +1,11 @@
 import express from "express"  
-import {JWT_SECRET} from "@repo/backend-common/secret"
+import {HTTP_PORT} from "@repo/backend-common/secret" 
+import authRoutes from "./routes/authRoutes"
 const app = express() 
-console.log("jwt secret is : ",JWT_SECRET)
 
-app.listen()
+app.use(express.json())
+app.use('/api/auth',authRoutes)
+
+app.listen(HTTP_PORT,()=>{
+    console.log("port is running on ",HTTP_PORT)
+})
