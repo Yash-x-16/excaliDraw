@@ -5,7 +5,7 @@ import bcrypt from "bcrypt"
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { JWT_SECRET } from "@repo/backend-common/secret";
 
-export const Signup = async(req:Request,res:Response)=>{
+export const signup = async(req:Request,res:Response)=>{
     const result = signupValidation.safeParse(req.body) 
     if(result.error){
         res.status(400).json({
@@ -72,7 +72,19 @@ export const signin = async (req:Request,res:Response)=>{
             email
         }) 
         if(isUserAlreadyExist){
-            
+            const checkPassword = await bcrypt.compare(password,isUserAlreadyExist.password) ; 
+            if(checkPassword){
+                const token = jwt.sign({userId:isUserAlreadyExist._id},JWT_SECRET) ; 
+                res.json({
+                    token , 
+                    message:"user logged in "
+                })
+            }else{
+                res.status(401).json({
+                    message:"unauthorized"
+                })
+                return ; 
+            }
         }
     } catch (error) {
         console.log("error in the signup controller")
@@ -81,3 +93,28 @@ export const signin = async (req:Request,res:Response)=>{
         })
     }
 }
+
+export const isUser = async(req:Request,res:Response)=>{
+    try {
+        const userId =  req.userId  ; 
+        if(!userId){
+            res.status(404).json({
+                message:"unauthorized"
+            }) 
+            return 
+        }
+        const user = await User.findById(userId) ; 
+        res.json({
+            user:{
+                username:user?.username , 
+                email:user?.email , 
+                rooms:user?.rooms 
+            }
+        })
+    } catch (error) {
+        console.log("error in the isUser controller",error) ; 
+        res.status(500).json({
+            message:"internal server error"
+        })
+    }
+} 
