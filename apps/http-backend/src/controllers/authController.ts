@@ -45,7 +45,7 @@ export const signup = async(req:Request,res:Response)=>{
                 username:newUser.username , 
                 email:newUser.email , 
                 createdAt:newUser.createdAt  ,
-                rooms:newUser.rooms
+                rooms:newUser.room
             }
         }) 
     } catch (error) {
@@ -111,12 +111,12 @@ export const isUser = async(req:Request,res:Response)=>{``
             console.log("user not found :)") ; 
             return
         }
-        await user.populate("rooms")  
+        await user.populate("room")  
         res.json({
             user:{
-                username:user?.username , 
-                email:user?.email , 
-                rooms:user?.rooms 
+                username:user.username , 
+                email:user.email , 
+                rooms:user.room
             }
         })
     } catch (error) {

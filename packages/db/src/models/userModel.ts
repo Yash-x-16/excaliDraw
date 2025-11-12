@@ -22,7 +22,7 @@ const userSchema = new Schema({
         type:Date , 
         required:true 
     },
-    rooms:[{
+    room:[{
         type:Schema.Types.ObjectId , 
         ref:"Room"
     }],
