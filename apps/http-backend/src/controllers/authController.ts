@@ -37,6 +37,7 @@ export const signup = async(req:Request,res:Response)=>{
             profilePicture,
             createdAt:Date.now()
         })
+    
         const token = jwt.sign({userId:newUser._id}as JwtPayload,JWT_SECRET as string) 
         res.json({
             token , 
@@ -96,7 +97,7 @@ export const signin = async (req:Request,res:Response)=>{
     }
 }
 
-export const isUser = async(req:Request,res:Response)=>{
+export const isUser = async(req:Request,res:Response)=>{``
     try {
         const userId =  req.userId  ; 
         if(!userId){
@@ -105,7 +106,12 @@ export const isUser = async(req:Request,res:Response)=>{
             }) 
             return 
         }
-        const user = await User.findById(userId) ; 
+        const user = await User.findById(userId) ;
+        if(!user){
+            console.log("user not found :)") ; 
+            return
+        }
+        await user.populate("rooms")  
         res.json({
             user:{
                 username:user?.username , 

@@ -16,13 +16,15 @@ export const createRoom = async(req:Request,res:Response)=>{
         const userId= req.userId 
         const room = await Room.create({
             admin:userId , 
-            slug:title 
-        })
+            slug:title  ,
+            createdAt:Date.now()
+        }) 
         res.json({
-            message:"room created"
+            message:"room created" , 
+            roomId:room._id 
         })
     } catch (error) {
-        console.log("error in creating room") , 
+        console.log("error in creating room",error) , 
         res.status(500).json({
             message:"internal server error"
         })

@@ -33,7 +33,7 @@ wss.on("connection", (socket,request)=>{
     } 
 
   const result =   isTokenValid(token as string) ; 
-    
+
   if(result){ 
 
     allUser.push({
@@ -44,7 +44,9 @@ wss.on("connection", (socket,request)=>{
     //socket function starts from here 
     socket.on("message",async (message)=>{ 
         
+        
     const parsedPayload = JSON.parse(message.toString())  
+    console.log("parsed payload is ",parsedPayload)
     //event handlers starts from here 
 
    if(parsedPayload.type==="join"){
@@ -58,21 +60,31 @@ wss.on("connection", (socket,request)=>{
     if(parsedPayload.type==="chat"){
         const message= parsedPayload.message ; 
         const roomId = parsedPayload.roomId ; 
-        await Chat.create({
+
+
+      const messagetodb= allUser.forEach(x=>{
+            if(x.roomId.includes(roomId)){
+                x.socket.send(message)
+            }
+        })
+        try {
+            await Chat.insertOne({
             text:message , 
             roomId,
             userId:result
         }) 
+        console.log("message to db is : ",messagetodb) ; 
 
-        allUser.forEach(x=>{
-            if(x.roomId.includes(roomId)){
-                x.socket.send(message)
-            }
-        }) 
-        
+        } catch (error) {
+           console.log("error in the saving to the db") 
+        } 
+         
     }
 
     })
+    }else{
+        socket.close()
+        return 
     }
 })
 
