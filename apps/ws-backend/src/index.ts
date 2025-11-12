@@ -1,9 +1,9 @@
 import WebSocket, { WebSocketServer } from "ws"; 
 import {WS_PORT} from "@repo/backend-common/secret" 
 import { isTokenValid } from "./auth/auth";
-
+import {Chat} from "@repo/db/chatModel"
 interface User{
-    room:string[] , 
+    roomId:string[] , 
     socket :WebSocket  , 
     userId:string
 }
@@ -17,7 +17,7 @@ wss.on("error",(e)=>{
 })
 
 
-wss.on("connection",(socket,request)=>{ 
+wss.on("connection", (socket,request)=>{ 
     const url  = request.url ; 
 
     if(!url){
@@ -38,75 +38,41 @@ wss.on("connection",(socket,request)=>{
 
     allUser.push({
         socket , 
-        room:[] , 
+        roomId:[] , 
         userId:result 
-    }) 
-
-    socket.on("message",(message)=>{ 
-        
-        const parsedPayload = JSON.parse(message.toString()) 
-        
-        if(parsedPayload.type==="join"){
-          const user  = allUser.find(x=>x.socket===socket) 
-          if(!user){
-            return 
-          } 
-         user.room.push(parsedPayload.roomId) ; 
-        }
-        
-        if(parsedPayload.type==="chat"){
-            const message = parsedPayload.message ; 
-            const roomId = parsedPayload.roomId ; 
-            allUser.forEach(user=>{
-                if(user.room.includes(roomId)){
-                    user.socket.send(JSON.stringify({
-                        type:"chat" , 
-                        message , 
-                        roomId 
-                    }))
-                }
-            })
-        }
-
-        if(parsedPayload.type==="leave"){ 
-
-            const user = allUser.find(x=>x.socket === socket) ; 
-            if(!user){
-                return 
-            }
-            user.room = user.room.filter(x=>x===parsedPayload.roomId)
-        }
     })
+    //socket function starts from here 
+    socket.on("message",async (message)=>{ 
+        
+    const parsedPayload = JSON.parse(message.toString())  
+    //event handlers starts from here 
 
+   if(parsedPayload.type==="join"){
+        const user = allUser.find(x=>x.socket===socket) ; 
+        if(!user){
+            return
+        }
+        user.roomId.push(parsedPayload.room)
+    }
+
+    if(parsedPayload.type==="chat"){
+        const message= parsedPayload.message ; 
+        const roomId = parsedPayload.roomId ; 
+        await Chat.create({
+            text:message , 
+            roomId,
+            userId:result
+        }) 
+
+        allUser.forEach(x=>{
+            if(x.roomId.includes(roomId)){
+                x.socket.send(message)
+            }
+        }) 
+        
+    }
+
+    })
     }
 })
 
-// if (parsedData.type === "join_room") {
-// const user = users.find(x => x.ws === ws);
-// user ?. rooms.push(parsedData.roomId);
-
-// if (parsedData.type === "leave_room") {
-// const user = users.find(x => x.ws === ws);
-// if (!user) {
-// return;
-
-// user. rooms = user ?. rooms. filter(x => x === parsedData.room);
-
-// 7
-
-// if (parsedData.type === "chat") {
-// const roomId = parsedData. roomId;
-// const message = parsedData.message;
-
-// await prismaClient.chat.create({
-// data: {
-// roomId,
-// message,
-// userId
-
-// users.forEach(user => {
-// if (user.rooms.includes(roomId) ) {
-// user.ws.send(JSON.stringify({
-// type: "chat",
-// message: message,
-// roomId
