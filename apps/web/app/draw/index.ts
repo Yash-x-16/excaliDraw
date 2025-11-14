@@ -1,3 +1,12 @@
+interface Shape{
+    type:"react" , 
+    x:number , 
+    y:number , 
+    width:number , 
+    height:number
+}
+
+let existingShapes:Shape[]= [] ; 
 export function initDraw(canvas:HTMLCanvasElement){
         const ctx = canvas.getContext("2d") ; 
         if(!ctx){
@@ -16,18 +25,30 @@ export function initDraw(canvas:HTMLCanvasElement){
         })
         canvas.addEventListener("mouseup",(e)=>{
             clicked= false ; 
+            existingShapes.push({
+                type:"react" , 
+                x:startX , 
+                y:startY , 
+                width:e.clientX - startX , 
+                height: e.clientY - startY
+            }) 
         })
         canvas.addEventListener("mousemove",(e)=>{
             if(clicked){
-              const  x = e.clientX -startX
-              const  y =  e.clientY - startY; 
-
-              ctx.clearRect(0,0,canvas.width,canvas.height) ; 
-              ctx.fillStyle = "black";
-              ctx.fillRect(0, 0, canvas.width, canvas.height);
-              ctx.strokeStyle = "white";
-              ctx.strokeRect(0, 0, canvas.width, canvas.height);
-              ctx.strokeRect(startX,startY,x,y) ; 
+                const height = e.clientY - startY 
+                const width = e.clientX - startX 
+              renderAllShapes(existingShapes,ctx,canvas);
+              ctx.strokeRect(startX,startY,width,height) ; 
             }
         })
+}
+
+function renderAllShapes(allShape:Shape[],ctx:CanvasRenderingContext2D,canvas:HTMLCanvasElement){
+      ctx.clearRect(0,0,canvas.width,canvas.height) ; 
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "white";
+    allShape.map(x=>{
+        ctx.strokeRect(x.x, x.y, x.width, x.height);
+    })
 }
