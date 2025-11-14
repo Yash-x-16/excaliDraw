@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Chat}from "@repo/db/chatModel"
+import { Room } from "@repo/db/roomModel";
 export const getChats = async (req:Request,res:Response)=>{ 
     try {  
             const roomId = req.params.roomId ; 
@@ -9,7 +10,10 @@ export const getChats = async (req:Request,res:Response)=>{
                 })
                 return 
             }
-            const chats =  await Chat.findById(roomId).sort({_id:-1}).limit(50).populate("userId").lean() 
+            const chats =  await Chat.find({
+                roomId
+            })   
+            console.log("chats from backend are ",chats)
             res.json({
                 chats
             })  

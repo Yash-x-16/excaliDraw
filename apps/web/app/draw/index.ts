@@ -11,7 +11,7 @@ interface Shape{
 
 
 export async function initDraw(canvas:HTMLCanvasElement,roomId:string,socket:WebSocket){
-        let existingShapes:Shape[]= await getAllShapes(roomId) ||[]
+        let existingShapes:Shape[]= await getAllShapes(roomId) 
         const ctx = canvas.getContext("2d") ; 
         if(!ctx){
             return 
@@ -20,7 +20,7 @@ export async function initDraw(canvas:HTMLCanvasElement,roomId:string,socket:Web
         socket.onmessage= (event)=>{
             const parsedMessage  = JSON.parse(event.data) ; 
             if(parsedMessage.type==="chat"){
-                const parsedTexts  = JSON.parse(parsedMessage.chat) ; 
+                const parsedTexts  = JSON.parse(parsedMessage.message) ; 
                 existingShapes.push(parsedTexts) ; 
                 renderAllShapes(existingShapes,ctx,canvas) ;
             } 
@@ -53,6 +53,7 @@ export async function initDraw(canvas:HTMLCanvasElement,roomId:string,socket:Web
 
             socket.send(JSON.stringify({
                 type:"chat" , 
+                roomId,
                 message:JSON.stringify({
                 x:startX , 
                 y:startY , 
@@ -87,6 +88,8 @@ function renderAllShapes(allShape:Shape[],ctx:CanvasRenderingContext2D,canvas:HT
 async function getAllShapes(roomId:string){
     const response = await axios.get(`${HTTP_URL}/chat/getChats/${roomId}`) 
     const messages = response.data.chats 
+    console.log("messages is ::",messages) 
+    console.log("data from db is ",response.data) ; 
     if(!messages){
         return null 
     }
@@ -94,8 +97,7 @@ async function getAllShapes(roomId:string){
         const parsedMessage = JSON.parse(x.text) ; 
         return parsedMessage ; 
     }) 
-    if(shapes===null){
-        return null
-    }
+
+    console.log("shapes is ",shapes)
     return shapes
 }

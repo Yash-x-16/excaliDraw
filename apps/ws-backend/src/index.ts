@@ -1,7 +1,8 @@
 import {WebSocket, WebSocketServer} from "ws";
 import {WS_PORT} from "@repo/backend-common/secret" 
 import { isTokenValid } from "./auth/auth"; 
-import {Chat}from "@repo/db/chatModel"
+import {Chat}from "@repo/db/chatModel"  
+import {Room} from  "@repo/db/roomModel"
 import {connectDb} from "@repo/db/db"
 const wss = new WebSocketServer({port:WS_PORT}) 
 interface User{
@@ -41,11 +42,12 @@ wss.on("connection",(socket,request)=>{
         })
         socket.on("message",async(data)=>{
             await connectDb()
-            const parsedMessage = JSON.parse(data.toString()) ; 
+            const parsedMessage = JSON.parse(data.toString()) ;  
+            console.log("parsed message is ",parsedMessage)
             if(parsedMessage.type==="join"){ 
-                
+                console.log("user reached is :)") ; 
                 const user  = allUser.find(x=>x.socket===socket) ;  
-                console.log("user is : ",user) 
+              
                 if(!user){
                     return 
                 }
@@ -53,16 +55,19 @@ wss.on("connection",(socket,request)=>{
             }
 
             if(parsedMessage.type==="chat"){ 
-                console.log("parsed message is :",parsedMessage)
                 const message = parsedMessage.message ; 
                 const roomId = parsedMessage.roomId ; 
-                console.log("roomId from ws is ",roomId) 
                 try {
-                    await Chat.create({
+                  const chats =   await Chat.create({
                     userId:result , 
                     roomId , 
                     text:message
                 })
+
+                await Room.findByIdAndUpdate(roomId,{$push:{
+                    chats
+                }})  
+
                 } catch (error) {
                     console.log("error in connection in db",error)
                 }
