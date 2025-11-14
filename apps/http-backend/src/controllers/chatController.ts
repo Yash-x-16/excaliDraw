@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { Chat}from "@repo/db/chatModel"
 export const getChats = async (req:Request,res:Response)=>{ 
-    try {
-        
+    try {  
             const roomId = req.params.roomId ; 
             if(!roomId){
                 res.status(404).json({

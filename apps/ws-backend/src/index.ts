@@ -42,7 +42,8 @@ wss.on("connection",(socket,request)=>{
         socket.on("message",async(data)=>{
             await connectDb()
             const parsedMessage = JSON.parse(data.toString()) ; 
-            if(parsedMessage.type==="join"){
+            if(parsedMessage.type==="join"){ 
+                
                 const user  = allUser.find(x=>x.socket===socket) ;  
                 console.log("user is : ",user) 
                 if(!user){
@@ -51,9 +52,11 @@ wss.on("connection",(socket,request)=>{
                 user.roomId.push(parsedMessage.roomId) ; 
             }
 
-            if(parsedMessage.type==="chat"){
+            if(parsedMessage.type==="chat"){ 
+                console.log("parsed message is :",parsedMessage)
                 const message = parsedMessage.message ; 
                 const roomId = parsedMessage.roomId ; 
+                console.log("roomId from ws is ",roomId) 
                 try {
                     await Chat.create({
                     userId:result , 
