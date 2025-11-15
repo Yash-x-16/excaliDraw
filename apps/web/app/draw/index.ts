@@ -16,7 +16,7 @@ export async function initDraw(canvas:HTMLCanvasElement,roomId:string,socket:Web
         if(!ctx){
             return 
         }
-
+        renderAllShapes(existingShapes,ctx,canvas);
         socket.onmessage= (event)=>{
             const parsedMessage  = JSON.parse(event.data) ; 
             if(parsedMessage.type==="chat"){
@@ -36,13 +36,13 @@ export async function initDraw(canvas:HTMLCanvasElement,roomId:string,socket:Web
             clicked = true ; 
             startX = e.clientX ; 
             startY = e.clientY ;  
-            console.log("start x is ",startX)
-            console.log("start y is ",startY)
+            
         })
         canvas.addEventListener("mouseup",(e)=>{
             clicked= false ; 
             const width=e.clientX - startX 
             const  height= e.clientY - startY
+                console.log("ran twice ....")
             existingShapes.push({
                 type:"react" , 
                 x:startX , 
@@ -50,7 +50,7 @@ export async function initDraw(canvas:HTMLCanvasElement,roomId:string,socket:Web
                 width , 
                 height
             })  
-
+        
             socket.send(JSON.stringify({
                 type:"chat" , 
                 roomId,
