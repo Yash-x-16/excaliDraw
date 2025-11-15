@@ -84,7 +84,7 @@ export const signin = async (req:Request,res:Response)=>{
     }
 }
 
-export const isUSer = async (req:Request,res:Response)=>{
+export const isUser = async (req:Request,res:Response)=>{
     try {
         const userId = req.userId  ; 
         if(!userId){

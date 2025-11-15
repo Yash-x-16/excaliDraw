@@ -1,9 +1,10 @@
 import express, { Router } from "express" 
+import { authMiddleware } from "../middleware/authmiddleware";
 
 const router:Router = express.Router() 
 
 try {
-    router.get('/getChats/:roomId')
+    router.get('/getChats/:roomId',authMiddleware)
 } catch (error) {
     console.log("error in the chatRoutes",error) ; 
 }
