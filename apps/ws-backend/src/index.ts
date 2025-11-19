@@ -2,6 +2,7 @@ import {WebSocket, WebSocketServer} from "ws";
 import {WS_PORT} from "@repo/backend-common/secret"
 import { checkAuth } from "./auth/auth";
 import {Chat} from "@repo/db/chat" 
+import {connectDb} from "@repo/db/db"
 
 interface Users {
     userId:string , 
@@ -15,13 +16,17 @@ const allUsers:Users[] = []
 
 wss.on("error",(e)=>{
     console.log("error in the ws server",e) ; 
+
 })
 
 wss.on("connection",async(socket,request)=>{
+    const host = await connectDb() ; 
+    console.log(host) ; 
     const url = request.url ; 
     if(!url){
         return 
     }
+
     const queryParam = new URLSearchParams(url?.split('?')[1]) 
     const token = queryParam.get('token') ; 
     if(!token){
@@ -72,6 +77,4 @@ wss.on("connection",async(socket,request)=>{
             }
         }     
         })
-    
-
 })
