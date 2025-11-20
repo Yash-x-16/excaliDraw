@@ -1,13 +1,14 @@
+  import axios from "axios" 
+  import {HTTP_URL} from "@repo/backend-common/secret"
   interface shape {
         startX:number , 
         startY:number , 
         width:number , 
         height:number
     }
-export const initDraw  = (canvas:HTMLCanvasElement , ctx:CanvasRenderingContext2D,socket:WebSocket,roomId:string)=>{
-  
-    
-    let allShapes:shape[] = [] 
+     
+export const initDraw  =async  (canvas:HTMLCanvasElement , ctx:CanvasRenderingContext2D,socket:WebSocket,roomId:string)=>{
+  let allShapes:shape[]  = await  getAllShapes(roomId)
     
      let startX = 0 ,startY = 0 ,clicked = false 
 
@@ -32,10 +33,10 @@ export const initDraw  = (canvas:HTMLCanvasElement , ctx:CanvasRenderingContext2
             socket.send(JSON.stringify({
                 type:"chat" , 
                 roomId , 
-                startX  , 
+                message:JSON.stringify({startX  , 
                 startY , 
                 width , 
-                height
+                height})
             }))
         })
         canvas.addEventListener("mousemove",(e)=>{
@@ -61,4 +62,15 @@ function renderAllShapes(canvas:HTMLCanvasElement,ctx:CanvasRenderingContext2D,a
     ctx.fillRect(0,0,canvas.width,canvas.height) ; 
     ctx.strokeStyle="white" ; 
     allshape.map(x=>ctx.strokeRect(x.startX,x.startY,x.width,x.height)) ; 
+}
+
+async function getAllShapes(roomId:string){
+    const response = await axios.get(`${HTTP_URL}/chats/${roomId}`) 
+    const chats = response.data.chats.map((x:{
+        text:string 
+    })=>{
+        const parsedMessage = JSON.parse(x.text) ; 
+        return parsedMessage
+    }) 
+    return chats ; 
 }
