@@ -28,6 +28,16 @@ importers:
         specifier: workspace:*
         version: link:../../packages/typescript-config
 
+  packages/backend-common:
+    dependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+
   packages/db:
     dependencies:
       '@types/mongoose':
