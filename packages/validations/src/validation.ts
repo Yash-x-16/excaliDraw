@@ -10,3 +10,7 @@ export const signinValidation = z.object({
     email:z.email() , 
     password:z.string() 
 })
+
+export const roomValidation = z.object({
+    slug:z.string().min(4).max(15) ; 
+})
