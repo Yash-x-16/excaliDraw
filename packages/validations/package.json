@@ -1,5 +1,5 @@
 {
-  "name": "@repo/backend-common",
+  "name": "@repo/validations",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,15 +8,16 @@
   },
   "keywords": [],
   "author": "",
-  "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
-  },
-  "exports":{
-    "./secret":"./src/config.ts"
-  },
   "license": "ISC",
   "type": "module",
+  "devDependencies": {
+    "@repo/typescript-config":"workspace:*"
+  },
+  "exports":{
+    "./validation":"./src/validation.ts"
+  },
   "dependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "zod": "^4.1.13"
   }
 }

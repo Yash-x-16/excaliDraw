@@ -1,8 +1,9 @@
 import mongoose from "mongoose"; 
+import {DB_URL} from "@repo/backend-common/secret"
 
 export const connectDb = async():Promise<string | null>=>{
     try {
-        const connection = await mongoose.connect("")
+        const connection = await mongoose.connect(DB_URL) ; 
         const  host = connection.connection.host 
         if(!host){
             return null 
