@@ -1,7 +1,8 @@
 import { WebSocket, WebSocketServer } from "ws"; 
 import {WS_PORT} from "@repo/backend-common/secret" 
 import { tokenAuth } from "./auth/wsAuth";
-
+import {connectDb} from "@repo/db/db" 
+import {Chat} from "@repo/db/chat"
 interface Users{
     socket:WebSocket , 
     rooms:string[] , 
@@ -16,7 +17,9 @@ wss.on("error",(error)=>{
     console.log("error in the ws server",error)
 })
 
-wss.on("connection",(socket,request)=>{
+wss.on("connection",async (socket,request)=>{ 
+    const connection = await connectDb() 
+    console.log(connection) ; 
     const searchUrl = request.url 
     if(!searchUrl){ 
         wss.close() ; 
@@ -37,30 +40,41 @@ wss.on("connection",(socket,request)=>{
             rooms:[]
         }) ; 
 
-        socket.on("message",(data)=>{
-            const parsedMessage = JSON.parse(data.toString()) ; 
-            if(parsedMessage.type==="join"){
-                const user = allUsers.find(x=>x.socket===socket) ; 
-                if(!user){
-                    return 
-                }
-                user.rooms.push(parsedMessage.roomId) ; 
-            }
-            if(parsedMessage.type==="chat"){
-                const roomId = parsedMessage.roomId ; 
-                const message = parsedMessage.message ; 
-                const user = allUsers.find(x=>{
-                    if(x.rooms.includes(roomId)){
-                        x.socket.send(message) ; 
+        socket.on("message",async (data)=>{ 
+            try {
+                const parsedMessage = JSON.parse(data.toString()) ; 
+                    if(parsedMessage.type==="join"){
+                        const user = allUsers.find(x=>x.socket===socket) ; 
+                        if(!user){
+                            return 
+                        }
+                        user.rooms.push(parsedMessage.roomId) ; 
                     }
-                })
+                    if(parsedMessage.type==="chat"){
+                        const roomId = parsedMessage.roomId ; 
+                        const message = parsedMessage.message ;
+
+                        await Chat.create({
+                            roomId , 
+                            adminId:userId , 
+                            text:JSON.stringify(message) 
+                        })
+                        const user = allUsers.find(x=>{
+                            if(x.rooms.includes(roomId)){
+                                x.socket.send(message) ; 
+                            }
+                        })
+                    }
+                    if(parsedMessage.type==="leave"){
+                        const user  = allUsers.find(x=>x.socket===socket) ; 
+                        if(!user)
+                            return 
+                        user.rooms.filter(x=>x != parsedMessage.roomId) ; 
+                    }  
+            } catch (error) {
+                console.log("error in parsing json",error) ; 
             }
-            if(parsedMessage.type==="leave"){
-                const user  = allUsers.find(x=>x.socket===socket) ; 
-                if(!user)
-                    return 
-                user.rooms.filter(x=>x != parsedMessage.roomId) ; 
-            }
+          
         })
     } 
 })
