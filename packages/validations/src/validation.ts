@@ -12,5 +12,5 @@ export const signinValidation = z.object({
 })
 
 export const roomValidation = z.object({
-    slug:z.string().min(4).max(15) ; 
+    slug:z.string().min(4).max(15) 
 })
