@@ -51,19 +51,18 @@ wss.on("connection",async(socket,request)=>{
             if(parsedMessage.type==="chat"){
                 const message = parsedMessage.message ; 
                 const roomId = parsedMessage.roomId ;  
-                // await Chat.create({
-                //     adminId:userId , 
-                //     text:message , 
-                //     roomId
-                // })
+                await Chat.create({
+                    adminId:userId , 
+                    text:message , 
+                    roomId
+                })
                 allUsers.find(x=>{
                     if(x.rooms.includes(roomId)){
-                        wss.clients.forEach((clients)=>{
-                            if(clients !== socket){
+                        wss.clients.forEach((clients)=>{//by using wss.client.send ensuring that the message 
+                            if(clients !== socket){// sent by sender does not recieved by himself ...
                                 clients.send(message) ; 
                             }
                         })
-                        // x.socket.send(message) ; 
                     }
                 })
             }
