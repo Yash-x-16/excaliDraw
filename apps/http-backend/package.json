@@ -12,7 +12,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*" , 
+    "@repo/db":"workspace:*" , 
+    "@repo/backend-common":"workspace:*"
   },
   "dependencies": {
     "@types/bcrypt": "^6.0.0",
