@@ -43,7 +43,7 @@ export const signup = async (req:Request,res:Response)=>{
 }
 
 export const signin = async (req:Request,res:Response)=>{
-    const result = signupSchema.safeParse(req.body) ; 
+    const result = signinSchema.safeParse(req.body) ; 
     if(!result.success){
         commonResponse("invalid validation",400,res) ; 
         return 
