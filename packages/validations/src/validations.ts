@@ -10,3 +10,7 @@ export const signinSchema = z.object({
     username:z.string().min(6) , 
     password:z.string().min(6) , 
 })
+
+export const roomSchema = z.object({
+    slug:z.string().min(4) 
+})
