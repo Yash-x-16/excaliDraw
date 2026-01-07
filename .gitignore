@@ -39,4 +39,4 @@ yarn-error.log*
 
 
 #secret files 
-config.ts
+config.ts 
