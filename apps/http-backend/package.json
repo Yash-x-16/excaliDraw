@@ -12,12 +12,19 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "dependencies": {
+  "devDependencies": {
+    "@repo/backend-common": "workspace:*",
+    "@repo/db": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/backend-common":"workspace:*",
-    "@repo/db":"workspace:*",
+    "@repo/validations": "workspace:*"
+  },
+  "dependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bcrypt": "^6.0.0",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "typescript": "^5.9.3"
   }
 }

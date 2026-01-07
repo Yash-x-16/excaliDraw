@@ -11,7 +11,10 @@
   "license": "ISC",
   "type": "module",
   "exports":{
-    "./db":"./src/db.ts"
+    "./db":"./src/db.ts" , 
+    "./User":"./src/models/userModel.ts",
+    "./Room":"./src/models/roomModel.ts",
+    "./Chat":"./src/models/chatModel.ts"
   },
   "dependencies": {
     "@repo/typescript-config": "workspace:*",
