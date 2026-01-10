@@ -2,6 +2,7 @@ import {roomSchema} from "@repo/validations/validation"
 import { Request,  Response } from "express" 
 import {Room} from "@repo/db/Room" 
 
+
 export const createRoom = async(req:Request,res:Response)=>{
     const result = roomSchema.safeParse(req.body) ; 
     if(!result.success){
@@ -34,10 +35,21 @@ export const createRoom = async(req:Request,res:Response)=>{
 
 export const deleteRoom = async(req:Request,res:Response)=>{
     try {
-        const slug = req.body ; 
-        const deletedRoom = await Room.deleteOne({slug}) ; 
+        const roomId = req.params.roomId ; 
+        if(!roomId){
+            res.status(404).json({
+                message:"roomId not found"  
+            })
+            return
+        }
+        const deletedRoom = await Room.findByIdAndDelete({
+           
+                _id:roomId 
+
+        }) ; 
         if(deletedRoom){
             res.json({
+                deletedRoom,
                 message:"room deleted" 
             })
             return

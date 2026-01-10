@@ -4,7 +4,7 @@ import {JWT_SECRET} from "@repo/backend-common/secret"
 
 export const authMiddleware = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        const token = req.params["token"] 
+        const token = req.headers["token"] 
         if(!token){
             res.status(404).json({
                 message:"token not found"
