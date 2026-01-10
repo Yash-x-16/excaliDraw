@@ -9,5 +9,5 @@ try {
     authRoutes.post("/signin",signin)
     authRoutes.get("/isUser",authMiddleware,isUser) 
 } catch (error) {
-    console.log("error in authRouter",error)
+    console.log("error in authRouter",error) 
 }

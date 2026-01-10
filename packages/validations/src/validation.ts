@@ -10,3 +10,8 @@ export const signinSchema = z.object({
     password:z.string().min(6) , 
     email:z.email() , 
 })
+
+
+export const roomSchema = z.object({
+    slug:z.string().min(6).max(20) 
+})
