@@ -7,7 +7,7 @@ export const authRoutes:Router = express.Router()
 try {
     authRoutes.post("/signup",signup)
     authRoutes.post("/signin",signin)
-    authRoutes.get("/isUser",authMiddleware,isUser)
+    authRoutes.get("/isUser",authMiddleware,isUser) 
 } catch (error) {
     console.log("error in authRouter",error)
 }
