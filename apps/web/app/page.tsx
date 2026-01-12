@@ -1,9 +1,6 @@
-import Image from "next/image";
-
+import  SketchElements  from "@repo/ui/ui/icons"
 export default function Home() {
-  return (
-   <div>
-    hello from yash
-   </div>
-  )
+  return <div className="min-h-screen overflow-hidden relative bg-black">
+   <SketchElements/>
+  </div>
 }
