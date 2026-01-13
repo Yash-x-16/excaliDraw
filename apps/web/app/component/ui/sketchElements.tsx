@@ -2,7 +2,7 @@ export const SketchElements = ()=>{
     return <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Top left sketchy arrow */}
       <svg
-        className="absolute top-20 left-10 w-32 h-32 text-white/20 animate-float"
+        className="absolute top-20 left-10 w-32 h-32 text-white/10 animate-float"
         viewBox="0 0 100 100"
         fill="none"
         stroke="currentColor"
@@ -20,7 +20,7 @@ export const SketchElements = ()=>{
 
       {/* Top right rectangle */}
       <svg
-        className="absolute top-32 right-20 w-24 h-24 text-white/20 animate-float"
+        className="absolute top-32 right-20 w-24 h-24 text-blue-600/15 animate-float"
         viewBox="0 0 100 100"
         fill="none"
         stroke="currentColor"
@@ -33,7 +33,7 @@ export const SketchElements = ()=>{
 
       {/* Bottom left diamond */}
       <svg
-        className="absolute bottom-40 left-20 w-20 h-20 text-white/20 animate-float"
+        className="absolute bottom-40 left-20 w-20 h-20 text-blue-600/15 animate-float"
         viewBox="0 0 100 100"
         fill="none"
         stroke="currentColor"
@@ -46,7 +46,7 @@ export const SketchElements = ()=>{
 
       {/* Bottom right circle */}
       <svg
-        className="absolute bottom-20 right-32 w-28 h-28 text-white/20 animate-float"
+        className="absolute bottom-20 right-32 w-28 h-28 text-white/10 animate-float"
         viewBox="0 0 100 100"
         fill="none"
         stroke="currentColor"
@@ -59,7 +59,7 @@ export const SketchElements = ()=>{
 
       {/* Middle left arrow */}
       <svg
-        className="absolute top-1/2 left-8 w-16 h-16 text-white/20 animate-float hidden lg:block"
+        className="absolute top-1/2 left-8 w-16 h-16 text-white/10 animate-float hidden lg:block"
         viewBox="0 0 100 100"
         fill="none"
         stroke="currentColor"
@@ -73,7 +73,7 @@ export const SketchElements = ()=>{
 
       {/* Top center scribble */}
       <svg
-        className="absolute top-10 left-1/3 w-24 h-12 text-white/20 hidden md:block"
+        className="absolute top-10 left-1/3 w-24 h-12 text-white/10 hidden md:block"
         viewBox="0 0 100 50"
         fill="none"
         stroke="currentColor"

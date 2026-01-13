@@ -7,6 +7,7 @@
     --animate-draw: draw 2s ease-out forwards;
     --font-virgil: "Virgil", cursive; 
     --font-Nunito: "Nunito", sans-serif;
+    --border: 240 10% 15%;
 
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
