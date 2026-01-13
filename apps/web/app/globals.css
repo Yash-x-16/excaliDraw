@@ -1,10 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 @import "tailwindcss";
 @plugin "daisyui";
 @layer theme {
   @theme {
     --animate-float: float 3s ease-in-out infinite;
     --animate-draw: draw 2s ease-out forwards;
-    --font-virgil: "Virgil", cursive;
+    --font-virgil: "Virgil", cursive; 
+    --font-Nunito: "Nunito", sans-serif;
 
     @keyframes float {
       0%, 100% { transform: translateY(0px); }

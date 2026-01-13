@@ -2,7 +2,7 @@ import { ReactNode } from "react"
 
 interface prop{
     text:string , 
-    size?:size , 
+  
     isOutlined?:boolean  , 
     classname?:string , 
     iconAtTheStart?:ReactNode ,  
@@ -10,14 +10,13 @@ interface prop{
 } 
 
 
-type  size = "btn-xs" | "btn-xl" | "btn-md" | "btn-lg" 
 
 export default function Button(prop:prop){
     return <button 
     className={`btn  
     ${prop.isOutlined?"btn-outline":""} 
     ${prop.classname}`}>
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-2">
             {prop.iconAtTheStart?prop.iconAtTheStart:""} 
             {prop.text} 
             {prop.iconAtTheEnd?prop.iconAtTheEnd:""}
