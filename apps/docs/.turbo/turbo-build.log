@@ -1,0 +1,19 @@
+[6n[?9001h[?1004h[m]0;C:\WINDOWS\system32\cmd.exe[?25h]0;C:\WINDOWS\system32\cmd.exe [?25l
+> docs@0.1.0 build C:\Users\OFFICE\files\projects\excaliDraw\apps\docs
+> next build[5;1H[?25h[38;2;173;127;168m[1m▲ Next.js 16.2.0[m (Turbopack)
+
+[37m[1m [m Creating an optimized production build ...
+[32m[1m✓[m Compiled successfully in 2.9s
+[?25l[37m[1m [m Running TypeScript  [36m.[m[K[99C[37m[1m [m Running TypeScript  [36m..[m[K[99C[37m[1m [m Running TypeScript  [36m...[m[K[99C[37m[1m [m Running TypeScript  [36m.[m[K[99C[37m[1m [m Running TypeScript  [36m..[m[K[99C[37m[1m [m Running TypeScript  [36m...[m[K[99C[37m[1m [m Running TypeScript  [36m.[m[K[99C[37m[1m [m Running TypeScript  [36m..[m[K[99C[37m[1m [m Running TypeScript  [36m...[m[K[99C[37m[1m [m Running TypeScript  [36m.[m[K[99C[37m[1m [m Running TypeScript  [36m..[m[K[99C[37m[1m [m Running TypeScript  [36m...[m[K[99C[32m[1m✓[m Finished TypeScript in 2.4s[K[37m[1m
+ [m Collecting page data using 5 workers  [36m.[m[K[99C[37m[1m [m Collecting page data using 5 workers  [36m..[m[K[99C[37m[1m [m Collecting page data using 5 workers  [36m...[m[K[99C[37m[1m [m Collecting page data using 5 workers  [36m.[m[K[99C[32m[1m✓[m Collecting page data using 5 workers in 830ms    [?25h
+[?25l[37m[1m [m Generating static pages using 5 workers (0/4)  [36m[    ][m[K[99C[37m[1m [m Generating static pages using 5 workers (0/4)  [36m[=   ][m[K[99C[37m[1m [m Generating static pages using 5 workers (0/4)  [36m[==  ][m[K[99C[37m[1m [m Generating static pages using 5 workers (0/4)  [36m[=== ][m[K[99C[32m[1m✓[m Generating static pages using 5 workers (4/4) in 698ms[?25h
+[37m[1m [m Finalizing page optimization  [36m.[?25l[m[32m[1m✓[m Finalizing page optimization in 17ms[K[?25h
+
+[4mRoute (app)[24m[K
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+[?9001l[?1004l
