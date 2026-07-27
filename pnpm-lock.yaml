@@ -27,7 +27,14 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
 
-  apps/ws-backend: {}
+  apps/ws-backend:
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
 
   packages/eslint-config:
     devDependencies:
