@@ -11,3 +11,18 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+
+model room {
+  name String 
+  id   Int @id 
+}
+
+model User {
+  Id Int @id @unique 
+  username String  
+  email String 
+  password String 
+  profilePicture String? 
+
+}
