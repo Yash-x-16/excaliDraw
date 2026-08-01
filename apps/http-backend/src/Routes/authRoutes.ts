@@ -1,11 +1,14 @@
 import express, { Router } from "express" 
+import { signin, signup } from "../controllers/authController"
 
 
-const authRoutes:Router = express.Router() 
+export const authRoutes:Router = express.Router() 
 
 try {
-    authRoutes.post("/signup")
-    authRoutes.post("/signin")
+    
+    authRoutes.post("/signup",signup)
+    authRoutes.post("/signin",signin)
+
 } catch (error) {
     console.log("error in authroutes",error)
 }
