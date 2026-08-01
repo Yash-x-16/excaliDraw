@@ -70,8 +70,6 @@ export const signin = async(req:authRequest,res:Response)=>{
             const checkedPassword = await bcrypt.compare(password,isUserAlreadyExist.password) ; 
             const userId = isUserAlreadyExist.Id
             if(checkedPassword){
-                
-               req.userId = userId
                const token =   jwt.sign({userId},JWT_SECRET)
                res.status(200).json({
                 message:"user logged in succesfully" , 

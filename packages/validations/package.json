@@ -15,6 +15,6 @@
     "zod": "^4.4.3"
   } ,
   "exports":{
-    "validations" :"./src/validations.ts"
+    "./validations" :"./src/validations.ts"
   }
 }

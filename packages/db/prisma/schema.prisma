@@ -10,13 +10,14 @@ datasource db {
 
 
 model User {
-  Id Int @id @unique 
+  Id Int @id  @default(autoincrement())
   username String  
   email String 
   password String 
   profilePicture String?  
+  createdAt    DateTime @default(now())  
   chats   Chat[]  
-  rooms   Room[] 
+  rooms   Room[]  
 } 
 
 model Room {
