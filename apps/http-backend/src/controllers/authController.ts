@@ -18,7 +18,7 @@ export const signup  = async(req:Request,res:Response)=>{
                 const {username,email,password,profilePicture} = parsedData.data
                 const userAlreadyExist = await client.user.findFirst({
                     where:{
-                        username
+                        
                     } 
                 }) ; 
                 if(userAlreadyExist){
@@ -68,7 +68,7 @@ export const signin = async(req:authRequest,res:Response)=>{
         })
         if(isUserAlreadyExist){
             const checkedPassword = await bcrypt.compare(password,isUserAlreadyExist.password) ; 
-            const userId = isUserAlreadyExist.Id
+            const userId = isUserAlreadyExist.id
             if(checkedPassword){
                const token =   jwt.sign({userId},JWT_SECRET)
                res.status(200).json({

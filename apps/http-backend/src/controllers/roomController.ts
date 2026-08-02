@@ -34,7 +34,7 @@ export const deleteRoom = async (req:authRequest,res:Response)=>{
         if(slugAlreadyExist){
             await client.room.delete({
                 where:{
-                    id : slugAlreadyExist.roomId
+                    id : slugAlreadyExist.id
                 }
             }) 
             res.status(200).json({
