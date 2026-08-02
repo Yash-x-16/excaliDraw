@@ -1,23 +1,23 @@
 import {  Response } from "express";
 import { authRequest } from "../types/express";
-import { client } from "@repo/db/client";
+import {Room} from "@repo/db/Room"
 
 export const createRoom = async(req:authRequest,res:Response)=>{ 
     const slug = req.body.slug
     try {
         const userId = req.userId  
-        const slugAlreadyExist = await client.room.findUnique({where:{slug}}) 
+        const slugAlreadyExist = await Room.findOne({where:{slug}}) 
         if(slugAlreadyExist){
             res.status(400).json({
                 message:"slug already exist !!"
             })
             return 
         }
-        await client.room.create({
-            data:{
+        await Room.create({
+           
                 slug , 
-                adminId:userId as number
-            }
+                adminId:userId as string
+            
         })
     } catch (error) {
         console.log("error in the create Room ",error) 
@@ -30,9 +30,9 @@ export const createRoom = async(req:authRequest,res:Response)=>{
 export const deleteRoom = async (req:authRequest,res:Response)=>{
     const slug = req.body.slug
     try {
-         const slugAlreadyExist = await client.room.findUnique({where:{slug}}) 
+         const slugAlreadyExist = await Room.findOne({where:{slug}}) 
         if(slugAlreadyExist){
-            await client.room.delete({
+            await Room.deleteOne({
                 where:{
                     id : slugAlreadyExist.id
                 }
@@ -58,9 +58,9 @@ export const deleteRoom = async (req:authRequest,res:Response)=>{
 export const getRoom = async(req:authRequest,res:Response)=>{
     try {
         const userId = req.userId ; 
-        const allRooms  = client.room.findMany({
+        const allRooms  = Room.find({
             where:{
-                adminId:userId as number
+                adminId:userId as String
             }
         })
         res.status(200).json({

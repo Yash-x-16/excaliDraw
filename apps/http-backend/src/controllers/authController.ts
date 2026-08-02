@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import {signinSchema,signupSchema} from "@repo/validations/validations" 
 import bcrypt from "bcrypt" 
-import {client }from "@repo/db/client"
+import {User} from "@repo/db/User"
 import { salt  , JWT_SECRET} from "../exports/dotenv";
 import { authRequest } from "../types/express"; 
 import jwt from "jsonwebtoken"
@@ -16,9 +16,9 @@ export const signup  = async(req:Request,res:Response)=>{
         } 
         try {
                 const {username,email,password,profilePicture} = parsedData.data
-                const userAlreadyExist = await client.user.findFirst({
+                const userAlreadyExist = await User.find({
                     where:{
-                        
+                        email 
                     } 
                 }) ; 
                 if(userAlreadyExist){
@@ -28,13 +28,10 @@ export const signup  = async(req:Request,res:Response)=>{
                     return 
                 } 
                 const hashedPassword = await bcrypt.hash(password,salt) 
-                const createdUser = await client.user.create({
-                    data:{
-                        email , 
-                        username , 
-                        password :hashedPassword , 
-                        profilePicture ,
-                    }
+                const createdUser = await User.create({
+                    username , 
+                    email , 
+                    password:hashedPassword , 
                 })
                 res.status(201).json({
                     message:"user created" , 
@@ -61,7 +58,7 @@ export const signin = async(req:authRequest,res:Response)=>{
 
     try {
         const {email,password} = parsedData.data
-        const isUserAlreadyExist = await client.user.findFirst({
+        const isUserAlreadyExist = await User.findOne({
             where:{
                 email
             }

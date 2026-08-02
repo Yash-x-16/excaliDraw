@@ -9,6 +9,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "exports":{
+    "./db":"./src/db.ts" , 
+    "./User":"./src/models/userModel.ts" ,
+    "./Room":"./src/models/roomModel.ts" , 
+    "./Chat":"./src/models/chatModel.ts"
+  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/mongoose": "^5.11.97",
