@@ -5,6 +5,7 @@ import { roomRoutes } from "./Routes/roomRoutes"
 const app = express() 
 
 app.use(express.json())
+
 app.use("/app/auth",authRoutes)
 app.use("/app/room",roomRoutes)
 
