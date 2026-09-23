@@ -10,16 +10,25 @@ datasource db {
 model User {
   id             Int     @id @default(autoincrement())
   email          String  @unique
-  name           String?
+  password       String
+  userName       String?
   profilePicture String?
-  posts          Post[]
+  rooms          Room[]
+  chats          Chat[]
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+model Room {
+  roomId  Int    @id @default(autoincrement())
+  adminId Int
+  admin   User   @relation(references: [id], fields: [adminId])
+  chats   Chat[]
+}
+
+model Chat {
+  chatId  Int    @id @default(autoincrement())
+  roomId  Int
+  room    Room   @relation(references: [roomId], fields: [roomId])
+  message String
+  userId  Int
+  user    User   @relation(references: [id], fields: [userId])
 }

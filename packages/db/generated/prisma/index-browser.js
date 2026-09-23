@@ -123,16 +123,21 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
-  name: 'name',
+  password: 'password',
+  userName: 'userName',
   profilePicture: 'profilePicture'
 };
 
-exports.Prisma.PostScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  content: 'content',
-  published: 'published',
-  authorId: 'authorId'
+exports.Prisma.RoomScalarFieldEnum = {
+  roomId: 'roomId',
+  adminId: 'adminId'
+};
+
+exports.Prisma.ChatScalarFieldEnum = {
+  chatId: 'chatId',
+  roomId: 'roomId',
+  message: 'message',
+  userId: 'userId'
 };
 
 exports.Prisma.SortOrder = {
@@ -153,7 +158,8 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Post: 'Post'
+  Room: 'Room',
+  Chat: 'Chat'
 };
 
 /**
