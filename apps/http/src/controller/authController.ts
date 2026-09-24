@@ -19,10 +19,11 @@ export const signup = async(req: Request, res: Response) => {
         if(isUserExist){
             return res.status(400).json({error:"User already exists"}) ; 
         }
+        const hashedPassword = await bcrypt.hash(password,Number(SALT)) ; 
         const user = await prisma.user.create({
             data:{
                 email,      
-                password,
+                password:hashedPassword,
                 userName:username,
                 profilePicture  
             }

@@ -1,10 +1,12 @@
 import  { WebSocketServer ,WebSocket} from "ws" 
 import dotenv from "dotenv"  
 import {prisma} from "@repo/db/db"
-import { authMiddleware } from "./middleware"
+import { authMiddleware, parseMessage } from "./middleware"
 
+let count = 0 ;  
 dotenv.config() 
 const port = process.env.WS_PORT ;  
+console.log("port is ",port)
 const wss = new WebSocketServer({port:Number(port)}) 
 
 
@@ -15,7 +17,9 @@ interface allUsers {
 } 
 
 let allUser:allUsers[] = [] ; 
-
+wss.on("error",()=>{
+    console.log("error in ws server")
+})
 wss.on("connection",(ws,request)=>{ 
     const url =  request.url 
     if(!url){ 
@@ -31,16 +35,20 @@ wss.on("connection",(ws,request)=>{
         return {
             message:"no userId found"
         }
-    }
+    } 
+    
     allUser.push({
         webSocket:ws  , 
         userId :userId as string , 
         roomId:null ,
-    })
-    ws.on("message",async(message)=>{
-        const data = JSON.stringify(message) ; 
-        const parsedData = JSON.parse(data) ; 
+    }) 
+   
+
+
+    ws.on("message",async(message)=>{  
+        const parsedData =parseMessage(message) ;  
         const roomId = Number(parsedData.roomId)
+
         if(parsedData.type=="join"){
             const user = allUser.find(x=>x.webSocket == ws) ; 
             if(!user){ 
@@ -60,7 +68,7 @@ wss.on("connection",(ws,request)=>{
         }
 
         if(parsedData.type=="chat"){ 
-             const message = parsedData.message ; 
+            const message = parsedData.message ; 
             await prisma.chat.create({
                 data:{
                     roomId , 
@@ -69,12 +77,14 @@ wss.on("connection",(ws,request)=>{
                 }
             })
             allUser.forEach(user=>{
-                if(user.roomId==roomId){
-                    ws.send(JSON.stringify({ 
+                if(user.roomId==roomId){ 
+                    user.webSocket.send(JSON.stringify({ 
                         message
-                    }))
+                    })) 
+                    console.log("line ran")
                 }
-            })
+            }) 
+           
         }
     })
 })
