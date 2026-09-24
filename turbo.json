@@ -1,8 +1,10 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
+  "globalEnv": ["IMPORTANT_GLOBAL_VARIABLE"],
   "tasks": {
     "build": {
+      "env" :["WS_PORT"],
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]

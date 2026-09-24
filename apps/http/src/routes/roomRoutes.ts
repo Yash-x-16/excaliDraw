@@ -10,3 +10,5 @@ try{
 }catch(error){
     console.log("error in the roomRoutes",error) ;
 }
+
+export default router
