@@ -3,7 +3,6 @@ import dotenv from "dotenv"
 import {prisma} from "@repo/db/db"
 import { authMiddleware, parseMessage } from "./middleware"
 
-let count = 0 ;  
 dotenv.config() 
 const port = process.env.WS_PORT ;  
 console.log("port is ",port)
@@ -17,9 +16,11 @@ interface allUsers {
 } 
 
 let allUser:allUsers[] = [] ; 
+
 wss.on("error",()=>{
     console.log("error in ws server")
 })
+
 wss.on("connection",(ws,request)=>{ 
     const url =  request.url 
     if(!url){ 
