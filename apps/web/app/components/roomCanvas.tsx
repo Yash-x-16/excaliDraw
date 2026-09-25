@@ -7,17 +7,17 @@ export default function RoomCanvas({roomId}:{
 }){
     const [socket ,setSocket] = useState<WebSocket | null>(null)
     
-    useEffect(()=>{
-        const ws= new WebSocket("") ;
-        ws.onopen= ()=>{
-            setSocket(ws) ;
-        }  
-    },[]) ; 
+    // useEffect(()=>{
+    //     const ws= new WebSocket("") ;
+    //     ws.onopen= ()=>{
+    //         setSocket(ws) ;
+    //     }  
+    // },[]) ; 
 
-    if(!socket){
-        return <div>
-            connecting to server ... 
-        </div>
-    }
+    // if(!socket){
+    //     return <div>
+    //         connecting to server ... 
+    //     </div>
+    // }
     return <Canvas roomId={roomId}/>
 }

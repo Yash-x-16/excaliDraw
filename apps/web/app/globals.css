@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  --background: #090a0f;
+  --foreground: #ededed;
+  --surface: #111318;
+  --surface-hover: #171a22;
+  --border-subtle: #1e222d;
+  --border-strong: #2a303f;
+  --accent: #3b82f6;
+}
+
+body {
+  color: var(--foreground);
+  background-color: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Subtle dot grid pattern for drafting / whiteboard aesthetic */
+.draft-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Minimalist scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #232733;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #32384a;
+}

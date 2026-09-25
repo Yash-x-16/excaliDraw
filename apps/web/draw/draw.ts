@@ -1,21 +1,20 @@
- import axios from "axios";
-import dotenv from"dotenv" 
- dotenv.config() 
+import axios from "axios";
 
- const http_url = process.env.HTTP_URL
+const http_url =  process.env.HTTP_URL ;
+
  interface shape{
         type:"react" , 
         x:number , 
         y:number , 
         width:number , 
-        height:number
+        height:number  
     }
 
 export async function initDraw(canvas:HTMLCanvasElement ,roomId:string){ 
     
 
 
-    let existingShape:shape[] = await getExistingShapes(roomId) ; 
+    let existingShape:shape[] = [] ; 
     const ctx = canvas.getContext("2d")
             if(!ctx){
                 return 
@@ -72,12 +71,12 @@ function clearCanvas(canvas:HTMLCanvasElement,ctx:CanvasRenderingContext2D,exist
     })
 } 
 
-async function getExistingShapes(roomId:string){
-    const data = (await axios.get(`${http_url}/${roomId}`)).data ; 
-    const message = data.message 
-    const shapes = message.map((x:{message:string})=>{
-        const parsedMessage = JSON.parse(x.message) ; 
-        return parsedMessage 
-    })
-    return shapes
-}
+// async function getExistingShapes(roomId:string){
+//     // const data = (await axios.get(`${http_url}/${roomId}`)).data ; 
+//     // const message = data.message 
+//     const shapes = message.map((x:{message:string})=>{
+//         const parsedMessage = JSON.parse(x.message) ; 
+//         return parsedMessage 
+//     })
+//     return shapes
+// }
