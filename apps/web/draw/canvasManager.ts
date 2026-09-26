@@ -1,4 +1,3 @@
-import { MouseEventHandler } from "react"
 import { shape } from "./shapesTypes"
 import { tools } from "./shapesTypes" 
 
@@ -99,7 +98,7 @@ export  class canvasManager {
     } 
 
     destroy (){ 
-        
+
         this.canvas.removeEventListener("mousedown",this.mouseDownHandler) ; 
         this.canvas.removeEventListener("mouseup",this.mouseUpHandler) ; 
         this.canvas.removeEventListener("mousemove",this.mousemoveHandler) ; 

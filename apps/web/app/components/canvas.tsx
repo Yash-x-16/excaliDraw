@@ -1,9 +1,7 @@
 "use client";
 
 import { canvasManager } from "@/draw/canvasManager";
-import { initDraw } from "@/draw/draw";
 import { tools } from "@/draw/shapesTypes";
-import { Socket } from "dgram";
 import { useEffect, useRef, useState } from "react";
 
 export default function Canvas({ roomId }: { roomId: string }) {
