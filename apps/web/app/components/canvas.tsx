@@ -5,7 +5,7 @@ import { tools } from "@/draw/shapesTypes";
 import { useEffect, useRef, useState } from "react";
 
 export default function Canvas({ roomId }: { roomId: string }) {
-  const [selectedShape, setSelectedShape] = useState<tools>("react");
+  const [selectedShape, setSelectedShape] = useState<tools>("rect");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game,setGame] = useState<canvasManager>() 
   // const [socket,setSocket] = useState<WebSocket>()
@@ -35,9 +35,9 @@ export default function Canvas({ roomId }: { roomId: string }) {
         {/* Rectangle Shape */}
         <button
           type="button"
-          onClick={() => setSelectedShape("react")}
+          onClick={() => setSelectedShape("rect")}
           className={`p-2 rounded-lg transition-all duration-150 flex items-center justify-center ${
-            selectedShape === "react"
+            selectedShape === "rect"
               ? "bg-zinc-800 text-blue-400 border border-zinc-700/80 shadow-xs ring-1 ring-blue-500/40"
               : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60"
           }`}

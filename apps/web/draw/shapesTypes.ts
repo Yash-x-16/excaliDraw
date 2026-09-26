@@ -7,10 +7,10 @@
     }  | 
         {
             type:"circle" , 
-            centerX:number, 
-            centerY:number , 
+            startX:number, 
+            startY:number , 
             radius:number , 
         }  
 
 
-export  type  tools = "react" | "circle" | "pencil" | "arrow" 
+export  type  tools = "rect" | "circle" | "pencil" | "arrow" 
