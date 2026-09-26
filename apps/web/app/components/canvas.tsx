@@ -1,16 +1,32 @@
 "use client";
 
+import { canvasManager } from "@/draw/canvasManager";
 import { initDraw } from "@/draw/draw";
+import { tools } from "@/draw/shapesTypes";
+import { Socket } from "dgram";
 import { useEffect, useRef, useState } from "react";
 
 export default function Canvas({ roomId }: { roomId: string }) {
-  const [selectedShape, setSelectedShape] = useState<"rectangle" | "circle" | "arrow" | "pencil">("rectangle");
+  const [selectedShape, setSelectedShape] = useState<tools>("react");
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [game,setGame] = useState<canvasManager>() 
+  // const [socket,setSocket] = useState<WebSocket>()
+  
+  useEffect(()=>{
+    game?.setTool(selectedShape)
+  },[selectedShape,game]) 
 
   useEffect(() => {
     if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      initDraw(canvas, roomId);
+      const canvas = canvasRef.current;  
+      // if(!socket){
+      //   return 
+      // }
+      const g = new canvasManager(canvas,roomId ) 
+      setGame(g) ; 
+      return ()=>{
+          g.destroy()
+        }  
     }
   }, [canvasRef, roomId]);
 
@@ -21,9 +37,9 @@ export default function Canvas({ roomId }: { roomId: string }) {
         {/* Rectangle Shape */}
         <button
           type="button"
-          onClick={() => setSelectedShape("rectangle")}
+          onClick={() => setSelectedShape("react")}
           className={`p-2 rounded-lg transition-all duration-150 flex items-center justify-center ${
-            selectedShape === "rectangle"
+            selectedShape === "react"
               ? "bg-zinc-800 text-blue-400 border border-zinc-700/80 shadow-xs ring-1 ring-blue-500/40"
               : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60"
           }`}

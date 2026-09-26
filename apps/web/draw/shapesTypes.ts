@@ -10,4 +10,7 @@
             centerX:number, 
             centerY:number , 
             radius:number , 
-        } 
+        }  
+
+
+export  type  tools = "react" | "circle" | "pencil" | "arrow" 
