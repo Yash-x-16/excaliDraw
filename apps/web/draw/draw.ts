@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const http_url =  process.env.HTTP_URL ;
+// const http_url =  process.env.HTTP_URL ;
 
  interface shape{
         type:"react" , 
@@ -71,12 +71,3 @@ function clearCanvas(canvas:HTMLCanvasElement,ctx:CanvasRenderingContext2D,exist
     })
 } 
 
-// async function getExistingShapes(roomId:string){
-//     // const data = (await axios.get(`${http_url}/${roomId}`)).data ; 
-//     // const message = data.message 
-//     const shapes = message.map((x:{message:string})=>{
-//         const parsedMessage = JSON.parse(x.message) ; 
-//         return parsedMessage 
-//     })
-//     return shapes
-// }
