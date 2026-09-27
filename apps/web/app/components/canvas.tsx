@@ -15,7 +15,8 @@ export default function Canvas({ roomId }: { roomId: string }) {
   },[selectedShape,game]) 
 
   useEffect(() => {
-    if (canvasRef.current) {
+    if (canvasRef.current) { 
+      console.log("effect ran 1")
       const canvas = canvasRef.current;  
       // if(!socket){
       //   return 
@@ -24,9 +25,10 @@ export default function Canvas({ roomId }: { roomId: string }) {
       setGame(g) ; 
       return ()=>{
           g.destroy()
+           console.log("effect ran 2")
         }  
     }
-  }, [canvasRef, roomId]);
+  }, [canvasRef, roomId])
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-black">

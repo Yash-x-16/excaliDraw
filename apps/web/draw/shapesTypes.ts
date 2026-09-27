@@ -1,5 +1,5 @@
  export type shape = {
-        type:"react" , 
+        type:"rect" , 
         x:number , 
         y:number , 
         width:number , 

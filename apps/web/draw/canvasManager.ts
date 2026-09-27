@@ -47,12 +47,21 @@ export  class canvasManager {
         this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height) ; 
 
         this.existingShapes.map((shape)=>{
-                if(shape.type=="react"){
+                if(shape.type=="rect"){
                     this.ctx.strokeStyle="rgb(255,255,255)"
-                    this.ctx.strokeRect(shape.x,shape.y,shape.width,shape.height) ;  
+                    this.ctx.strokeRect(shape.x,shape.y,shape.width,shape.height) ; 
+                    console.log("existing shpaes from react",this.existingShapes) ;  
                 }else if(shape.type=="circle"){
                     //circle logic 
-                    this.createCircle(shape.startX,shape.startY,shape.radius) ;
+                    console.log("existing shapes are: ",this.existingShapes)
+                    console.log("circle radius is ",this.circleRadius) ; 
+                    this.createCircle(shape.startX,shape.startY,shape.radius) ; 
+                //    this.ctx.save() 
+            // this.ctx.beginPath()   
+            // this.ctx.strokeStyle ="white"  
+            // this.ctx.arc(shape.startX,shape.startY,shape.radius,0,Math.PI*2) ;  
+            // this.ctx.stroke()
+            // this.ctx.fill() 
                 }
             })
     }  
@@ -64,26 +73,32 @@ export  class canvasManager {
     }
 
     mouseUpHandler =  (e:MouseEvent)=>{
-           this.clicked = false
+           this.clicked = false 
+           let shape:shape | null = null
            let x = e.clientX -  this.startX ; 
            let y = e.clientY -  this.startY ; 
            if(this.currentTool=="rect") {
-                    this.existingShapes.push({
-                    type:"react" , 
+                 shape =    {
+                    type:"rect" , 
                     x: this.startX, 
                     y: this.startY , 
                     width:x , 
                     height:y
-                })
-           }else if (this.currentTool=="circle"){ 
+                }
+           }else if (this.currentTool=="circle"){  
             let radius =this.circleRadius
-                this.existingShapes.push({
+                shape = {
                     type:"circle" ,  
                     startX:this.startX , 
                     startY:this.startY,
                     radius
-                })
-           }
+                }
+           } 
+           if(!shape){
+            return 
+           } 
+           
+           this.existingShapes.push(shape)
           
     }
 
@@ -92,7 +107,6 @@ export  class canvasManager {
           let y = e.clientY - this.startY ; 
           if(this.clicked && this.currentTool=="rect"){
              this.clearCanvas() ;   
-             this.ctx.save();
              this.ctx.lineWidth = 2;
              this.ctx.strokeStyle = "rgb(255,255,255)"
              this.ctx.strokeRect(this.startX,this.startY,x,y) ;   
@@ -100,6 +114,7 @@ export  class canvasManager {
 
          }
          else if(this.clicked && this.currentTool=="circle"){ 
+            this.clearCanvas() ;  
             this.circleRadius =  Math.abs(Math.sqrt(x*x +y*y)) ;  
             this.createCircle(this.startX,this.startY,this.circleRadius) ; 
          }
@@ -122,14 +137,14 @@ export  class canvasManager {
 
         this.canvas.removeEventListener("mousedown",this.mouseDownHandler) ; 
         this.canvas.removeEventListener("mouseup",this.mouseUpHandler) ; 
-        this.canvas.removeEventListener("mousemove",this.mousemoveHandler) ; 
+        this.canvas.removeEventListener("mousemove",this.mousemoveHandler)  
     } 
 
     private createCircle(startX:number,startY:number,radius:number){
-            this.clearCanvas()  
             this.ctx.save() 
             this.ctx.beginPath()   
             this.ctx.strokeStyle ="white"  
+            this.ctx.fillStyle="transparent"
             this.ctx.lineWidth=4
             this.ctx.arc(startX,startY,radius,0,Math.PI*2) ;  
             this.ctx.stroke()
