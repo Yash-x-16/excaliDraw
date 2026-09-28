@@ -148,12 +148,12 @@ export  class canvasManager {
            this.clearCanvas()  ; 
            this.createLine(this.startX,this.startY,this.endX,this.endY) ; 
          } else if(this.clicked && this.currentTool==="pencil"){ 
-            
-         
             this.clearCanvas()  
             this.pencilPoints.push({x:e.clientX,y:e.clientY}) ; 
             this.createSketch(this.pencilPoints) ; 
-
+         } else if (this.clicked && this.currentTool==="arrow"){
+            // this.clearCanvas() 
+            // this.createArrow(this.startX,this.startY,this.endX,this.endY)
          }
     }
 
@@ -209,5 +209,32 @@ export  class canvasManager {
         }
         this.ctx.strokeStyle="white"   
         this.ctx.stroke()
-    }
+    } 
+
+    // private createArrow (startX:number,startY:number,endX:number,endY:number) {
+    //     let headLength = 10 ; 
+    //     let width = startX-endX 
+    //     let height = startY-endY 
+    //     let angle = Math.atan2(height,width) ;  
+    //     this.ctx.beginPath()
+    //     this.ctx.moveTo(startX, startY);
+    //     this.ctx.lineTo(endX, endY);
+    //     this.ctx.strokeStyle = 'white';
+    //     this.ctx.stroke(); 
+
+    //     this.ctx.beginPath();
+    //     this.ctx.moveTo(endX, endY);
+    //     this.ctx.lineTo(
+    //         endX - headLength * Math.cos(angle - Math.PI / 6),
+    //         endX - headLength * Math.sin(angle - Math.PI / 6)
+    //                 );
+    //     this.ctx.lineTo(
+    //         endX - headLength * Math.cos(angle + Math.PI / 6),
+    //         endY - headLength * Math.sin(angle + Math.PI / 6)
+    //             );
+    //     this.ctx.lineTo(endX, endY);
+    //     this.ctx.fillStyle = 'white';
+    //     this.ctx.fill(); 
+        
+    // }
 }
