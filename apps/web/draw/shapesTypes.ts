@@ -16,7 +16,9 @@
             startY:  number
             endX:   number
             endY:   number
+        } |{
+            type:"sketch" , 
+            points:{x:number,y:number}[] 
         }
-
 
 export  type  tools = "rect" | "circle" | "pencil" | "arrow" |"line"

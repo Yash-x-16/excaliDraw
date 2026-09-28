@@ -17,7 +17,8 @@ export  class canvasManager {
     private pencilX = 0 ;
     private pencilY = 0 ;
     private currentTool :tools = "circle" ; 
-    private circleRadius =0 
+    private circleRadius =0  
+    private pencilPoints:{x:number,y:number}[]= [] ; 
 
     constructor (canvas:HTMLCanvasElement ,  roomId:string,){
         this.canvas = canvas   
@@ -70,14 +71,15 @@ export  class canvasManager {
             this.startX = e.clientX 
             this.startY = e.clientY  
             this.pencilX = e.clientX
-           this.pencilY = e.clientY
-            this.clicked = true
+            this.pencilY = e.clientY
+            this.clicked = true 
+            this.pencilPoints[0].x = this.startX 
+            this.pencilPoints[0].y = this.startY 
     }
 
     mouseUpHandler =  (e:MouseEvent)=>{
            this.clicked = false 
            let shape:shape | null = null 
-
 
            let x = e.clientX -  this.startX ; 
            let y = e.clientY -  this.startY ; 
@@ -133,15 +135,16 @@ export  class canvasManager {
          } else if(this.clicked && this.currentTool==="line"){
            this.clearCanvas()  ; 
            this.createLine(this.startX,this.startY,this.endX,this.endY) ; 
-         } else if(this.clicked && this.currentTool==="pencil"){
+         } else if(this.clicked && this.currentTool==="pencil"){ 
+            
+            this.pencilPoints.push({x:e.clientX,y:e.clientY}) 
             this.clearCanvas() 
-            this.createSketch(this.startX,this.startY,this.pencilX,this.pencilY)
-         }
-    }
+            this.createSketch(this.pencilPoints) ; 
 
-    mouseEnterHandler =(e:MouseEvent)=>{
-        this.pencilX = e.clientX ; 
-        this.pencilY = e.clientY ; 
+            // this.createSketch() ; 
+            // this.pencilX = e.clientX 
+            // this.pencilY = e.clientY ; 
+         }
     }
 
     mouseHandlers(){
@@ -151,9 +154,6 @@ export  class canvasManager {
         this.canvas.addEventListener("mouseup",this.mouseUpHandler) 
 
         this.canvas.addEventListener("mousemove",this.mousemoveHandler) 
-
-        this.canvas.addEventListener("mouseenter",this.mouseEnterHandler) 
-
     }
 
     setCurrentTool(tool:tools){
@@ -165,7 +165,6 @@ export  class canvasManager {
         this.canvas.removeEventListener("mousedown",this.mouseDownHandler) ; 
         this.canvas.removeEventListener("mouseup",this.mouseUpHandler) ; 
         this.canvas.removeEventListener("mousemove",this.mousemoveHandler)  ; 
-        this.canvas.removeEventListener("mouseenter",this.mouseEnterHandler) ;  
 
     } 
 
@@ -190,12 +189,14 @@ export  class canvasManager {
         this.ctx.stroke()
     } 
 
-    private createSketch(startX:number,startY:number,pencilX:number,pencilY:number){
+    private createSketch(points:{x:number,y:number}[]){
         this.ctx.beginPath()
-        this.ctx.lineCap="round"
-        this.ctx.moveTo(startX,startY) ; 
-        this.mouseEnterHandler()
-        this.ctx.lineTo(pencilX,pencilY) ;   
+        this.ctx.lineCap="round" 
+        this.ctx.lineJoin="round" ; 
+        this.ctx.moveTo(points[0].x,points[0].y) ;  
+        for(let i =1 ; i<points.length;i++){
+             this.ctx.lineTo(points[i].x,points[i].y) ; 
+        }
         this.ctx.strokeStyle="white"   
         this.ctx.stroke()
     }
