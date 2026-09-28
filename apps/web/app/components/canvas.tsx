@@ -105,6 +105,23 @@ export default function Canvas({ roomId }: { roomId: string }) {
             />
           </svg>
         </button>
+        {/* line Tool */}
+        <button
+          type="button"
+          onClick={() => setSelectedShape("line")}
+          className={`p-2 rounded-lg transition-all duration-150 flex items-center justify-center ${
+            selectedShape === "line"
+              ? "bg-zinc-800 text-blue-400 border border-zinc-700/80 shadow-xs ring-1 ring-blue-500/40"
+              : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60"
+          }`}
+          title="line"
+          aria-label="line"
+        >
+          <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14"/>
+</svg>
+
+        </button>
       </div>
 
       <canvas

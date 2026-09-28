@@ -10,7 +10,13 @@
             startX:number, 
             startY:number , 
             radius:number , 
-        }  
+        }  | {
+            type:"line" , 
+            startX  :number
+            startY:  number
+            endX:   number
+            endY:   number
+        }
 
 
-export  type  tools = "rect" | "circle" | "pencil" | "arrow" 
+export  type  tools = "rect" | "circle" | "pencil" | "arrow" |"line"

@@ -11,9 +11,13 @@ export  class canvasManager {
     // private socket:WebSocket 
     private clicked:boolean 
     private startX = 0 
-    private startY = 0 
+    private startY = 0  
+    private endX = 0 ; 
+    private endY = 0 ;  
+    private pencilX = 0 ;
+    private pencilY = 0 ;
     private currentTool :tools = "circle" ; 
-    private circleRadius =0
+    private circleRadius =0 
 
     constructor (canvas:HTMLCanvasElement ,  roomId:string,){
         this.canvas = canvas   
@@ -43,38 +47,38 @@ export  class canvasManager {
     clearCanvas(){
         
         this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height) ; 
-        this.ctx.fillStyle="rgb(0,0,0)" 
+        this.ctx.fillStyle="rgb(0,0,0)"  
+        this.ctx.lineWidth=3
         this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height) ; 
 
         this.existingShapes.map((shape)=>{
-                if(shape.type=="rect"){
+                if(shape.type==="rect"){
+                    
                     this.ctx.strokeStyle="rgb(255,255,255)"
-                    this.ctx.strokeRect(shape.x,shape.y,shape.width,shape.height) ; 
-                    console.log("existing shpaes from react",this.existingShapes) ;  
-                }else if(shape.type=="circle"){
-                    //circle logic 
-                    console.log("existing shapes are: ",this.existingShapes)
-                    console.log("circle radius is ",this.circleRadius) ; 
+                    this.ctx.strokeRect(shape.x,shape.y,shape.width,shape.height) ;  
+
+                }else if(shape.type==="circle"){
+
                     this.createCircle(shape.startX,shape.startY,shape.radius) ; 
-                //    this.ctx.save() 
-            // this.ctx.beginPath()   
-            // this.ctx.strokeStyle ="white"  
-            // this.ctx.arc(shape.startX,shape.startY,shape.radius,0,Math.PI*2) ;  
-            // this.ctx.stroke()
-            // this.ctx.fill() 
+                }else if(shape.type==="line"){
+                    this.createLine(shape.startX,shape.startY,shape.endX,shape.endY) ; 
                 }
             })
     }  
 
     mouseDownHandler = (e:MouseEvent)=>{
             this.startX = e.clientX 
-            this.startY = e.clientY 
+            this.startY = e.clientY  
+            this.pencilX = e.clientX
+           this.pencilY = e.clientY
             this.clicked = true
     }
 
     mouseUpHandler =  (e:MouseEvent)=>{
            this.clicked = false 
-           let shape:shape | null = null
+           let shape:shape | null = null 
+
+
            let x = e.clientX -  this.startX ; 
            let y = e.clientY -  this.startY ; 
            if(this.currentTool=="rect") {
@@ -93,7 +97,15 @@ export  class canvasManager {
                     startY:this.startY,
                     radius
                 }
-           } 
+           } else if (this.currentTool==="line"){
+            shape = {
+                type:"line" , 
+                startX:this.startX , 
+                startY:this.startY , 
+                endX:this.endX , 
+                endY:this.endY
+            }
+           }
            if(!shape){
             return 
            } 
@@ -105,19 +117,31 @@ export  class canvasManager {
     mousemoveHandler = (e:MouseEvent)=>{
           let x = e.clientX - this.startX ; 
           let y = e.clientY - this.startY ; 
-          if(this.clicked && this.currentTool=="rect"){
+           this.endX = e.clientX ; 
+           this.endY = e.clientY ;  
+          if(this.clicked && this.currentTool==="rect"){
              this.clearCanvas() ;   
              this.ctx.lineWidth = 2;
              this.ctx.strokeStyle = "rgb(255,255,255)"
              this.ctx.strokeRect(this.startX,this.startY,x,y) ;   
-            //  this.ctx.restore()
 
          }
-         else if(this.clicked && this.currentTool=="circle"){ 
+         else if(this.clicked && this.currentTool==="circle"){ 
             this.clearCanvas() ;  
             this.circleRadius =  Math.abs(Math.sqrt(x*x +y*y)) ;  
             this.createCircle(this.startX,this.startY,this.circleRadius) ; 
+         } else if(this.clicked && this.currentTool==="line"){
+           this.clearCanvas()  ; 
+           this.createLine(this.startX,this.startY,this.endX,this.endY) ; 
+         } else if(this.clicked && this.currentTool==="pencil"){
+            this.clearCanvas() 
+            this.createSketch(this.startX,this.startY,this.pencilX,this.pencilY)
          }
+    }
+
+    mouseEnterHandler =(e:MouseEvent)=>{
+        this.pencilX = e.clientX ; 
+        this.pencilY = e.clientY ; 
     }
 
     mouseHandlers(){
@@ -126,7 +150,10 @@ export  class canvasManager {
 
         this.canvas.addEventListener("mouseup",this.mouseUpHandler) 
 
-        this.canvas.addEventListener("mousemove",this.mousemoveHandler)
+        this.canvas.addEventListener("mousemove",this.mousemoveHandler) 
+
+        this.canvas.addEventListener("mouseenter",this.mouseEnterHandler) 
+
     }
 
     setCurrentTool(tool:tools){
@@ -137,7 +164,9 @@ export  class canvasManager {
 
         this.canvas.removeEventListener("mousedown",this.mouseDownHandler) ; 
         this.canvas.removeEventListener("mouseup",this.mouseUpHandler) ; 
-        this.canvas.removeEventListener("mousemove",this.mousemoveHandler)  
+        this.canvas.removeEventListener("mousemove",this.mousemoveHandler)  ; 
+        this.canvas.removeEventListener("mouseenter",this.mouseEnterHandler) ;  
+
     } 
 
     private createCircle(startX:number,startY:number,radius:number){
@@ -150,6 +179,24 @@ export  class canvasManager {
             this.ctx.stroke()
             this.ctx.fill() 
             this.ctx.restore()
-    }
+    } 
 
+    private createLine (startX:number,startY:number,endX:number,endY:number){
+        this.ctx.beginPath() 
+        this.ctx.lineCap="round"
+        this.ctx.moveTo(startX,startY) ; 
+        this.ctx.lineTo(endX,endY) ;   
+        this.ctx.strokeStyle="white"   
+        this.ctx.stroke()
+    } 
+
+    private createSketch(startX:number,startY:number,pencilX:number,pencilY:number){
+        this.ctx.beginPath()
+        this.ctx.lineCap="round"
+        this.ctx.moveTo(startX,startY) ; 
+        this.mouseEnterHandler()
+        this.ctx.lineTo(pencilX,pencilY) ;   
+        this.ctx.strokeStyle="white"   
+        this.ctx.stroke()
+    }
 }
