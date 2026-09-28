@@ -63,6 +63,8 @@ export  class canvasManager {
                     this.createCircle(shape.startX,shape.startY,shape.radius) ; 
                 }else if(shape.type==="line"){
                     this.createLine(shape.startX,shape.startY,shape.endX,shape.endY) ; 
+                }else if (shape.type==="pencil"){
+                    this.createSketch(shape.points) ; 
                 }
             })
     }  
@@ -73,14 +75,16 @@ export  class canvasManager {
             this.pencilX = e.clientX
             this.pencilY = e.clientY
             this.clicked = true 
-            this.pencilPoints[0].x = this.startX 
-            this.pencilPoints[0].y = this.startY 
+            if (this.currentTool==="pencil"){
+                this.pencilPoints=[{x:this.startX,y:this.startY}]
+            }
+            
     }
 
     mouseUpHandler =  (e:MouseEvent)=>{
            this.clicked = false 
            let shape:shape | null = null 
-
+          this.pencilPoints.push({x:e.clientX,y:e.clientY}) 
            let x = e.clientX -  this.startX ; 
            let y = e.clientY -  this.startY ; 
            if(this.currentTool=="rect") {
@@ -107,6 +111,14 @@ export  class canvasManager {
                 endX:this.endX , 
                 endY:this.endY
             }
+           }else if (this.currentTool==="pencil"){
+            shape ={
+                type:"pencil" , 
+                points:this.pencilPoints 
+            } 
+            console.log("existing shape : ",this.existingShapes)
+            console.log("mouse up points : ",this.pencilPoints)
+            this.pencilPoints=[] ; 
            }
            if(!shape){
             return 
@@ -137,13 +149,11 @@ export  class canvasManager {
            this.createLine(this.startX,this.startY,this.endX,this.endY) ; 
          } else if(this.clicked && this.currentTool==="pencil"){ 
             
-            this.pencilPoints.push({x:e.clientX,y:e.clientY}) 
-            this.clearCanvas() 
+         
+            this.clearCanvas()  
+            this.pencilPoints.push({x:e.clientX,y:e.clientY}) ; 
             this.createSketch(this.pencilPoints) ; 
 
-            // this.createSketch() ; 
-            // this.pencilX = e.clientX 
-            // this.pencilY = e.clientY ; 
          }
     }
 

@@ -17,7 +17,7 @@
             endX:   number
             endY:   number
         } |{
-            type:"sketch" , 
+            type:"pencil" , 
             points:{x:number,y:number}[] 
         }
 
