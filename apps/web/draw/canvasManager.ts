@@ -237,4 +237,6 @@ export  class canvasManager {
     //     this.ctx.fill(); 
         
     // }
+
+    
 }
