@@ -131,14 +131,13 @@ export  class canvasManager {
     mousemoveHandler = (e:MouseEvent)=>{
           let x = e.clientX - this.startX ; 
           let y = e.clientY - this.startY ; 
-           this.endX = e.clientX ; 
-           this.endY = e.clientY ;  
+          this.endX = e.clientX ; 
+          this.endY = e.clientY ;  
           if(this.clicked && this.currentTool==="rect"){
              this.clearCanvas() ;   
              this.ctx.lineWidth = 2;
              this.ctx.strokeStyle = "rgb(255,255,255)"
              this.ctx.strokeRect(this.startX,this.startY,x,y) ;   
-
          }
          else if(this.clicked && this.currentTool==="circle"){ 
             this.clearCanvas() ;  
@@ -152,9 +151,9 @@ export  class canvasManager {
             this.pencilPoints.push({x:e.clientX,y:e.clientY}) ; 
             this.createSketch(this.pencilPoints) ; 
          } else if (this.clicked && this.currentTool==="arrow"){
-            // this.clearCanvas() 
-            // this.createArrow(this.startX,this.startY,this.endX,this.endY)
-         }
+            this.clearCanvas() 
+                 
+        }
     }
 
     mouseHandlers(){
@@ -211,32 +210,7 @@ export  class canvasManager {
         this.ctx.stroke()
     } 
 
-    // private createArrow (startX:number,startY:number,endX:number,endY:number) {
-    //     let headLength = 10 ; 
-    //     let width = startX-endX 
-    //     let height = startY-endY 
-    //     let angle = Math.atan2(height,width) ;  
-    //     this.ctx.beginPath()
-    //     this.ctx.moveTo(startX, startY);
-    //     this.ctx.lineTo(endX, endY);
-    //     this.ctx.strokeStyle = 'white';
-    //     this.ctx.stroke(); 
 
-    //     this.ctx.beginPath();
-    //     this.ctx.moveTo(endX, endY);
-    //     this.ctx.lineTo(
-    //         endX - headLength * Math.cos(angle - Math.PI / 6),
-    //         endX - headLength * Math.sin(angle - Math.PI / 6)
-    //                 );
-    //     this.ctx.lineTo(
-    //         endX - headLength * Math.cos(angle + Math.PI / 6),
-    //         endY - headLength * Math.sin(angle + Math.PI / 6)
-    //             );
-    //     this.ctx.lineTo(endX, endY);
-    //     this.ctx.fillStyle = 'white';
-    //     this.ctx.fill(); 
-        
-    // }
 
     
 }
