@@ -177,6 +177,4 @@ The canvas page (`/canvas/[roomId]`) features a dedicated top-center toolbar:
 
 ---
 
-## 📄 License
 
-This project is licensed under the [ISC License](LICENSE).
