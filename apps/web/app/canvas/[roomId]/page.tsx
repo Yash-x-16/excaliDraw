@@ -1,4 +1,3 @@
-import Canvas from "@/app/components/canvas";
 import RoomCanvas from "@/app/components/roomCanvas";
 
 export default async function CanvasPage ({ params }:{params:{roomId:string}}){

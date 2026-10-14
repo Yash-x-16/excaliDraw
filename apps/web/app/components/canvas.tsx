@@ -118,9 +118,25 @@ export default function Canvas({ roomId }: { roomId: string }) {
           aria-label="line"
         >
           <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14"/>
-</svg>
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14"/>
+          </svg>
+        </button>
 
+        {/* Text Tool */}
+        <button
+          type="button"
+          onClick={() => setSelectedShape("text")}
+          className={`p-2 rounded-lg transition-all duration-150 flex items-center justify-center ${
+            selectedShape === "text"
+              ? "bg-zinc-800 text-blue-400 border border-zinc-700/80 shadow-xs ring-1 ring-blue-500/40"
+              : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60"
+          }`}
+          title="Text"
+          aria-label="Text"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M12 6v14" />
+          </svg>
         </button>
       </div>
 

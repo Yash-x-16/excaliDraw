@@ -1,4 +1,4 @@
- export type shape = {
+export type shape = {
         type:"rect" , 
         x:number , 
         y:number , 
@@ -25,6 +25,11 @@
             startY:number 
             endX:number 
             endY:number 
+        } | {
+            type:"text" , 
+            x:number , 
+            y:number , 
+            text:string 
         }
 
-export  type  tools = "rect" | "circle" | "pencil" | "arrow" |"line"
+export type tools = "rect" | "circle" | "pencil" | "arrow" | "line" | "text"

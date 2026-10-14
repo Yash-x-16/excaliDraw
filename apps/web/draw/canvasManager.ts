@@ -67,11 +67,18 @@ export  class canvasManager {
                     this.createSketch(shape.points) ; 
                 }else if (shape.type==="arrow"){
                     this.createArrow(shape.startX,shape.startY,shape.endX,shape.endY)
+                }else if (shape.type==="text"){
+                    this.createText(shape.x,shape.y,shape.text)
                 }
             })
     }  
 
     mouseDownHandler = (e:MouseEvent)=>{
+            if (this.currentTool === "text") {
+                this.clicked = false;
+                this.addTextArea(e.clientX, e.clientY);
+                return;
+            }
             this.startX = e.clientX 
             this.startY = e.clientY  
             this.pencilX = e.clientX
@@ -192,7 +199,10 @@ export  class canvasManager {
         this.canvas.removeEventListener("mousedown",this.mouseDownHandler) ; 
         this.canvas.removeEventListener("mouseup",this.mouseUpHandler) ; 
         this.canvas.removeEventListener("mousemove",this.mousemoveHandler)  ; 
-
+        const existingTextarea = document.getElementById("canvas-active-textarea");
+        if (existingTextarea) {
+            existingTextarea.remove();
+        }
     } 
 
     private createCircle(startX:number,startY:number,radius:number){
@@ -252,6 +262,94 @@ export  class canvasManager {
         );
 
         this.ctx.stroke();
+    }
+
+    private createText(x: number, y: number, text: string) {
+        this.ctx.save();
+        this.ctx.fillStyle = "white";
+        this.ctx.font = "20px sans-serif";
+        this.ctx.textBaseline = "top";
+        const lines = text.split("\n");
+        const lineHeight = 24;
+        lines.forEach((line, index) => {
+            this.ctx.fillText(line, x, y + index * lineHeight);
+        });
+        this.ctx.restore();
+    }
+
+    private addTextArea(x: number, y: number) {
+        const existingTextarea = document.getElementById("canvas-active-textarea") as HTMLTextAreaElement | null;
+        if (existingTextarea) {
+            existingTextarea.blur();
+        }
+
+        const textarea = document.createElement("textarea");
+        textarea.id = "canvas-active-textarea";
+        textarea.placeholder = "Type text here...";
+        textarea.style.position = "fixed";
+        textarea.style.left = `${x}px`;
+        textarea.style.top = `${y}px`;
+        textarea.style.background = "transparent";
+        textarea.style.color = "white";
+        textarea.style.font = "20px sans-serif";
+        textarea.style.lineHeight = "24px";
+        textarea.style.border = "1px dashed rgba(255, 255, 255, 0.6)";
+        textarea.style.outline = "none";
+        textarea.style.padding = "2px 4px";
+        textarea.style.margin = "0";
+        textarea.style.zIndex = "100";
+        textarea.style.resize = "none";
+        textarea.style.overflow = "hidden";
+        textarea.style.whiteSpace = "pre";
+        textarea.rows = 1;
+
+        const adjustSize = () => {
+            textarea.style.width = "auto";
+            textarea.style.height = "auto";
+            textarea.style.width = `${Math.max(120, textarea.scrollWidth + 10)}px`;
+            textarea.style.height = `${Math.max(30, textarea.scrollHeight)}px`;
+        };
+
+        textarea.addEventListener("input", adjustSize);
+
+        let isCommitted = false;
+        const commitText = () => {
+            if (isCommitted) return;
+            isCommitted = true;
+            const textValue = textarea.value.trim();
+            if (textValue.length > 0) {
+                this.existingShapes.push({
+                    type: "text",
+                    x,
+                    y,
+                    text: textarea.value
+                });
+                this.clearCanvas();
+            }
+            if (textarea.parentNode) {
+                textarea.parentNode.removeChild(textarea);
+            }
+        };
+
+        textarea.addEventListener("blur", commitText);
+
+        textarea.addEventListener("keydown", (e: KeyboardEvent) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                commitText();
+            } else if (e.key === "Escape") {
+                isCommitted = true;
+                if (textarea.parentNode) {
+                    textarea.parentNode.removeChild(textarea);
+                }
+            }
+        });
+
+        document.body.appendChild(textarea);
+        adjustSize();
+        setTimeout(() => {
+            textarea.focus();
+        }, 10);
     }
 
 }
