@@ -10,12 +10,12 @@ export  class canvasManager {
     private existingShapes:shape[] ; 
     // private socket:WebSocket 
     private clicked:boolean 
-    private startX = 0 
+    private startX = 0  
+    private isDragging = false  
+    private selectedShapeIndex:number   =  0 ; 
     private startY = 0  
     private endX = 0 ; 
     private endY = 0 ;  
-    private pencilX = 0 ;
-    private pencilY = 0 ;
     private currentTool :tools = "circle" ; 
     private circleRadius =0  
     private pencilPoints:{x:number,y:number}[]= [] ; 
@@ -29,7 +29,7 @@ export  class canvasManager {
         this.initHandlers() ;  
         // this.socket = socket ; 
         this.mouseHandlers() 
-        this.clicked  = false 
+        this.clicked  = false  
     }
 
     init(){
@@ -78,14 +78,20 @@ export  class canvasManager {
                 this.clicked = false;
                 this.addTextArea(e.clientX, e.clientY);
                 return;
-            }
+            } 
             this.startX = e.clientX 
             this.startY = e.clientY  
-            this.pencilX = e.clientX
-            this.pencilY = e.clientY
             this.clicked = true 
             if (this.currentTool==="pencil"){
                 this.pencilPoints=[{x:this.startX,y:this.startY}]
+            } 
+
+            let index = 0 ; 
+            for (let shape of this.existingShapes){
+                if(this.isMouseInShape(this.startX,this.startY,shape)){
+                    this.selectedShapeIndex = index
+                }
+                index ++ ; 
             }
             
     }
@@ -131,8 +137,6 @@ export  class canvasManager {
                 type:"pencil" , 
                 points:this.pencilPoints 
             } 
-            console.log("existing shape : ",this.existingShapes)
-            console.log("mouse up points : ",this.pencilPoints)
             this.pencilPoints=[] ; 
            } 
            
@@ -350,6 +354,14 @@ export  class canvasManager {
         setTimeout(() => {
             textarea.focus();
         }, 10);
+    } 
+
+    private isMouseInShape(x:number,y:number,shape:shape):boolean{  
+        if(shape.type=="arrow" || shape.type=="rect" || shape.type=="line" || shape.type == "circle"){
+      
+        }
+
+        return true 
     }
 
 }

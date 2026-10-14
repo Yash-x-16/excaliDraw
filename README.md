@@ -176,5 +176,3 @@ The canvas page (`/canvas/[roomId]`) features a dedicated top-center toolbar:
 | **Pencil** | `✎` | Freehand drawing and rapid visual annotations |
 
 ---
-
-
