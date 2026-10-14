@@ -74,11 +74,16 @@ export  class canvasManager {
     }  
 
     mouseDownHandler = (e:MouseEvent)=>{
+    
+
             if (this.currentTool === "text") {
                 this.clicked = false;
                 this.addTextArea(e.clientX, e.clientY);
                 return;
             } 
+            if(this.isDragging){
+                this.clicked = false ; 
+            }
             this.startX = e.clientX 
             this.startY = e.clientY  
             this.clicked = true 
@@ -86,18 +91,24 @@ export  class canvasManager {
                 this.pencilPoints=[{x:this.startX,y:this.startY}]
             } 
 
+           
             let index = 0 ; 
             for (let shape of this.existingShapes){
-                if(this.isMouseInShape(this.startX,this.startY,shape)){
-                    this.selectedShapeIndex = index
+                if(this.isMouseInShape(this.startX,this.startY,shape)){ 
+                    console.log("isMouseInSHape is true",this.isMouseInShape(this.startX,this.startY,shape))
+                    this.selectedShapeIndex = index 
+                    this.isDragging = true ;   
+                    return 
                 }
                 index ++ ; 
-            }
+            }  
             
     }
 
     mouseUpHandler =  (e:MouseEvent)=>{
-           this.clicked = false 
+           this.clicked = false  
+           this.isDragging = false   
+           console.log("is dragging must be false",this.isDragging)
            let shape:shape | null = null 
           this.pencilPoints.push({x:e.clientX,y:e.clientY}) 
            let x = e.clientX -  this.startX ; 
@@ -154,7 +165,6 @@ export  class canvasManager {
            } 
            
            this.existingShapes.push(shape)
-          
     }
 
     mousemoveHandler = (e:MouseEvent)=>{
@@ -162,7 +172,8 @@ export  class canvasManager {
           let y = e.clientY - this.startY ; 
           this.endX = e.clientX ; 
           this.endY = e.clientY ;  
-          if(this.clicked && this.currentTool==="rect"){
+          if(this.clicked && this.currentTool==="rect"){ 
+            console.log("clicked is true ")
              this.clearCanvas() ;   
              this.ctx.lineWidth = 2;
              this.ctx.strokeStyle = "rgb(255,255,255)"
@@ -182,6 +193,18 @@ export  class canvasManager {
          } else if (this.clicked && this.currentTool==="arrow"){
             this.clearCanvas() 
             this.createArrow(this.startX,this.startY,this.endX,this.endY) ;   
+        } 
+
+        if(this.isDragging){ 
+            console.log("is dragging is true",this.isDragging)
+            let currentShape = this.existingShapes[this.selectedShapeIndex] ;  
+            if (currentShape.type==="rect"){
+                currentShape.x +=x 
+                currentShape.y +=y  
+                this.clearCanvas()  
+                this.startX = e.clientX 
+                this.startY = e.clientY 
+            }
         }
     }
 
@@ -356,12 +379,19 @@ export  class canvasManager {
         }, 10);
     } 
 
-    private isMouseInShape(x:number,y:number,shape:shape):boolean{  
-        if(shape.type=="arrow" || shape.type=="rect" || shape.type=="line" || shape.type == "circle"){
-      
-        }
+    private isMouseInShape(x:number,y:number,shape:shape){  
+        if(shape.type=="rect"){
+            let shapeLeft = shape.x  
+            let shapeRight = shape.x +shape.width 
+            let shapetop = shape.y 
+            let shapeBottom = shape.y + shape.height  
 
-        return true 
+            if(x > shapeLeft && x<shapeRight && y < shapeBottom && y > shapetop){
+                return true 
+            }
+           
+        } 
+         return false
     }
 
 }
