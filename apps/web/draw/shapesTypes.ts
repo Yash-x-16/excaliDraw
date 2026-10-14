@@ -32,4 +32,4 @@ export type shape = {
             text:string 
         }
 
-export type tools = "rect" | "circle" | "pencil" | "arrow" | "line" | "text"
+export type tools = "rect" | "circle" | "pencil" | "arrow" | "line" | "text" | "select"

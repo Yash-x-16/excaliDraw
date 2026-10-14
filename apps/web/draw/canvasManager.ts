@@ -91,9 +91,9 @@ export  class canvasManager {
                 this.pencilPoints=[{x:this.startX,y:this.startY}]
             } 
 
-           
-            let index = 0 ; 
-            for (let shape of this.existingShapes){
+           if(this.currentTool==="select"){
+             let index = 0 ; 
+             for (let shape of this.existingShapes){
                 if(this.isMouseInShape(this.startX,this.startY,shape)){ 
                     console.log("isMouseInSHape is true",this.isMouseInShape(this.startX,this.startY,shape))
                     this.selectedShapeIndex = index 
@@ -102,13 +102,14 @@ export  class canvasManager {
                 }
                 index ++ ; 
             }  
+           }
+           
             
     }
 
     mouseUpHandler =  (e:MouseEvent)=>{
            this.clicked = false  
            this.isDragging = false   
-           console.log("is dragging must be false",this.isDragging)
            let shape:shape | null = null 
           this.pencilPoints.push({x:e.clientX,y:e.clientY}) 
            let x = e.clientX -  this.startX ; 
@@ -202,6 +203,13 @@ export  class canvasManager {
                 currentShape.x +=x 
                 currentShape.y +=y  
                 this.clearCanvas()  
+                this.startX = e.clientX 
+                this.startY = e.clientY 
+            }else if (currentShape.type==="circle"){ 
+                console.log("control reached here also")
+                currentShape.startX += x 
+                currentShape.startY += y 
+                this.clearCanvas() 
                 this.startX = e.clientX 
                 this.startY = e.clientY 
             }
@@ -379,18 +387,35 @@ export  class canvasManager {
         }, 10);
     } 
 
-    private isMouseInShape(x:number,y:number,shape:shape){  
-        if(shape.type=="rect"){
-            let shapeLeft = shape.x  
-            let shapeRight = shape.x +shape.width 
-            let shapetop = shape.y 
-            let shapeBottom = shape.y + shape.height  
+    private isMouseInShape(x:number,y:number,shape:shape){   
+          let shapeLeft  
+          let shapeRight
+          let shapetop  
+          let shapeBottom  
+        switch (shape.type) {
+            case "rect" : 
+                shapeLeft = shape.x  
+                shapeRight = shape.x +shape.width 
+                shapetop = shape.y 
+                shapeBottom = shape.y + shape.height  
 
+                if(x > shapeLeft && x<shapeRight && y < shapeBottom && y > shapetop){
+                    return true  
+                } 
+                break ; 
+
+            case "circle" : 
+            shapeLeft = shape.startX 
+            shapeRight = shape.radius + shape.startX 
+            shapetop = shape.startY 
+            shapeBottom = shape.radius + shape.startY  
             if(x > shapeLeft && x<shapeRight && y < shapeBottom && y > shapetop){
-                return true 
-            }
-           
-        } 
+                console.log("control reached and is false")
+                return true  
+            } 
+
+        }
+       
          return false
     }
 

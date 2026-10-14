@@ -34,7 +34,28 @@ export default function Canvas({ roomId }: { roomId: string }) {
     <div className="relative w-screen h-screen overflow-hidden bg-black">
       {/* Top Center Shape Selection Bar */}
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 p-1.5 rounded-xl border border-zinc-800 bg-[#0e1117]/90 backdrop-blur-md shadow-xl">
-        {/* Rectangle Shape */}
+               {/* Select Tool */}
+        <button
+          type="button"
+          onClick={() => setSelectedShape("select")}
+          className={`p-2 rounded-lg transition-all duration-150 flex items-center justify-center ${
+            selectedShape === "select"
+              ? "bg-zinc-800 text-blue-400 border border-zinc-700/80 shadow-xs ring-1 ring-blue-500/40"
+              : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60"
+          }`}
+          title="Select"
+          aria-label="Select"
+        >
+          <svg
+            className="w-5 h-5"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M2 2V10.5L3.5 12L6.33579 9.16421L12.5858 15.4142L15.4142 12.5858L9.16421 6.33579L12 3.5L10.5 2H2Z" />
+          </svg>
+        </button>
+               {/* Rectangle Shape */}
         <button
           type="button"
           onClick={() => setSelectedShape("rect")}
@@ -138,6 +159,7 @@ export default function Canvas({ roomId }: { roomId: string }) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M12 6v14" />
           </svg>
         </button>
+
       </div>
 
       <canvas
