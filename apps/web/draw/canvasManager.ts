@@ -65,6 +65,8 @@ export  class canvasManager {
                     this.createLine(shape.startX,shape.startY,shape.endX,shape.endY) ; 
                 }else if (shape.type==="pencil"){
                     this.createSketch(shape.points) ; 
+                }else if (shape.type==="arrow"){
+                    this.createArrow(shape.startX,shape.startY,shape.endX,shape.endY)
                 }
             })
     }  
@@ -95,7 +97,9 @@ export  class canvasManager {
                     width:x , 
                     height:y
                 }
-           }else if (this.currentTool=="circle"){  
+           }
+           
+           else if (this.currentTool=="circle"){  
             let radius =this.circleRadius
                 shape = {
                     type:"circle" ,  
@@ -103,7 +107,9 @@ export  class canvasManager {
                     startY:this.startY,
                     radius
                 }
-           } else if (this.currentTool==="line"){
+           } 
+           
+           else if (this.currentTool==="line"){
             shape = {
                 type:"line" , 
                 startX:this.startX , 
@@ -111,7 +117,9 @@ export  class canvasManager {
                 endX:this.endX , 
                 endY:this.endY
             }
-           }else if (this.currentTool==="pencil"){
+           }
+           
+           else if (this.currentTool==="pencil"){
             shape ={
                 type:"pencil" , 
                 points:this.pencilPoints 
@@ -119,6 +127,16 @@ export  class canvasManager {
             console.log("existing shape : ",this.existingShapes)
             console.log("mouse up points : ",this.pencilPoints)
             this.pencilPoints=[] ; 
+           } 
+           
+           else if (this.currentTool==="arrow"){
+            shape = {
+                type:"arrow" , 
+                startX :this.startX, 
+                startY:this.startY , 
+                endX:this.endX , 
+                endY:this.endY 
+            }
            }
            if(!shape){
             return 
@@ -152,7 +170,7 @@ export  class canvasManager {
             this.createSketch(this.pencilPoints) ; 
          } else if (this.clicked && this.currentTool==="arrow"){
             this.clearCanvas() 
-                 
+            this.createArrow(this.startX,this.startY,this.endX,this.endY) ;   
         }
     }
 
@@ -208,9 +226,32 @@ export  class canvasManager {
         }
         this.ctx.strokeStyle="white"   
         this.ctx.stroke()
-    } 
+    }  
 
+    private createArrow(startX:number,startY:number,endX:number,endY:number,){ 
+        
+        const angle = Math.atan2(endY - startY, endX - startX);
+        const headLength = 15 
+        const headAngle = Math.PI /6 
+        this.ctx.strokeStyle ="white"
 
+        this.ctx.beginPath();
+        this.ctx.moveTo(startX, startY);
+        this.ctx.lineTo(endX, endY);
 
-    
+        this. ctx.moveTo(endX, endY);
+        this. ctx.lineTo(
+            endX - headLength * Math.cos(angle - headAngle),
+            endY - headLength * Math.sin(angle - headAngle)
+        );
+
+        this.ctx.moveTo(endX, endY);
+        this.ctx.lineTo(
+            endX - headLength * Math.cos(angle + headAngle),
+            endY - headLength * Math.sin(angle + headAngle)
+        );
+
+        this.ctx.stroke();
+    }
+
 }
