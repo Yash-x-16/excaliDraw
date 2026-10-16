@@ -95,7 +95,6 @@ export  class canvasManager {
              let index = 0 ; 
              for (let shape of this.existingShapes){
                 if(this.isMouseInShape(this.startX,this.startY,shape)){ 
-                    console.log("isMouseInSHape is true",this.isMouseInShape(this.startX,this.startY,shape))
                     this.selectedShapeIndex = index 
                     this.isDragging = true ;   
                     return 
@@ -197,21 +196,38 @@ export  class canvasManager {
         } 
 
         if(this.isDragging){ 
-            console.log("is dragging is true",this.isDragging)
-            let currentShape = this.existingShapes[this.selectedShapeIndex] ;  
-            if (currentShape.type==="rect"){
+            let currentShape = this.existingShapes[this.selectedShapeIndex] ;   
+            switch(currentShape.type) {
+                case "rect" :{
                 currentShape.x +=x 
                 currentShape.y +=y  
                 this.clearCanvas()  
                 this.startX = e.clientX 
                 this.startY = e.clientY 
-            }else if (currentShape.type==="circle"){ 
-                console.log("control reached here also")
-                currentShape.startX += x 
-                currentShape.startY += y 
-                this.clearCanvas() 
-                this.startX = e.clientX 
-                this.startY = e.clientY 
+
+                break ; 
+                } 
+                case "circle" :{
+                    currentShape.startX += x 
+                    currentShape.startY += y 
+                    this.clearCanvas() 
+                    this.startX = e.clientX 
+                    this.startY = e.clientY  
+
+                    break ; 
+                } 
+
+                case "line" :{ 
+                    currentShape.startX += x
+                    currentShape.startY += y 
+                    currentShape.endX += x 
+                    currentShape.endY += y  
+                    this.clearCanvas()
+                    this.startX = e.clientX 
+                    this.startY = e.clientY  
+                    this.endX =   e.clientX ; 
+                    this.endY =   e.clientY ;  
+                }
             }
         }
     }
@@ -393,8 +409,8 @@ export  class canvasManager {
           let shapetop  
           let shapeBottom  
         switch (shape.type) {
-            case "rect" : 
-                shapeLeft = shape.x  
+            case "rect" : {
+                 shapeLeft = shape.x  
                 shapeRight = shape.x +shape.width 
                 shapetop = shape.y 
                 shapeBottom = shape.y + shape.height  
@@ -404,7 +420,10 @@ export  class canvasManager {
                 } 
                 break ; 
 
-            case "circle" : 
+            }
+               
+            case "circle" : {
+                
                 shapeLeft = shape.startX  - shape.radius 
                 shapeRight = shape.radius + shape.startX 
                 shapetop = shape.startY  - shape.radius 
@@ -413,8 +432,28 @@ export  class canvasManager {
                     console.log("control reached and is false")
                     return true  
                 }  
-                break ; 
+                break ;  
 
+            }
+
+            case "line" :{ 
+                console.log("control reached line")
+                const width = shape.startX - shape.endX ; 
+                const height = shape.startY - shape.startY ; 
+                const d = Math.sqrt(width*width + height *height) ; 
+
+                const newWidth = x - shape.endX 
+                const newHeight = y - shape.endY 
+                const newDistance = Math.sqrt(newWidth * newWidth + newHeight * newHeight) ; 
+
+                if(newDistance<d){
+                    console.log("control reached line 2") ; 
+                    return true 
+                }
+                 
+
+                break ; 
+            }
         }
        
          return false
