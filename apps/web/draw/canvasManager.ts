@@ -405,14 +405,15 @@ export  class canvasManager {
                 break ; 
 
             case "circle" : 
-            shapeLeft = shape.startX 
-            shapeRight = shape.radius + shape.startX 
-            shapetop = shape.startY 
-            shapeBottom = shape.radius + shape.startY  
-            if(x > shapeLeft && x<shapeRight && y < shapeBottom && y > shapetop){
-                console.log("control reached and is false")
-                return true  
-            } 
+                shapeLeft = shape.startX  - shape.radius 
+                shapeRight = shape.radius + shape.startX 
+                shapetop = shape.startY  - shape.radius 
+                shapeBottom = shape.radius + shape.startY  
+                if(x > shapeLeft && x<shapeRight && y < shapeBottom && y > shapetop){
+                    console.log("control reached and is false")
+                    return true  
+                }  
+                break ; 
 
         }
        
