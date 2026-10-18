@@ -439,7 +439,7 @@ export  class canvasManager {
             case "line" :{ 
                 console.log("control reached line")
                 const width = shape.startX - shape.endX ; 
-                const height = shape.startY - shape.startY ; 
+                const height = shape.startY - shape.endY ; 
                 const d = Math.sqrt(width*width + height *height) ; 
 
                 const newWidth = x - shape.endX 
