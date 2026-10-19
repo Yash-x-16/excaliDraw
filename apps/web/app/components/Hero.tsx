@@ -12,7 +12,12 @@ export default function Hero() {
 
   const handleJoinRoom = (e: React.FormEvent) => {
     e.preventDefault();
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     const targetRoom = roomId.trim() || "creative-space";
+    if (!token) {
+      router.push(`/signin?redirect=/canvas/${encodeURIComponent(targetRoom)}`);
+      return;
+    }
     router.push(`/canvas/${encodeURIComponent(targetRoom)}`);
   };
 
@@ -46,7 +51,7 @@ export default function Hero() {
               href="/dashboard"
               className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm"
             >
-              <span>Open Workspace (No Sign-in needed)</span>
+              <span>Open Workspace</span>
               <ArrowRightIcon className="w-3.5 h-3.5" />
             </Link>
 

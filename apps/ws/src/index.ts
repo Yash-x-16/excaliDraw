@@ -48,7 +48,20 @@ wss.on("connection",(ws,request)=>{
 
     ws.on("message",async(message)=>{  
         const parsedData =parseMessage(message) ;  
-        const roomId = Number(parsedData.roomId)
+        if (!parsedData) return;
+        let roomId = Number(parsedData.roomId);
+        if (isNaN(roomId) && parsedData.roomId) {
+            try {
+                const room = await prisma.room.findUnique({
+                    where: { slug: String(parsedData.roomId) }
+                });
+                if (room) {
+                    roomId = room.roomId;
+                }
+            } catch (e) {
+                console.error("Error finding room by slug in ws", e);
+            }
+        }
 
         if(parsedData.type=="join"){
             const user = allUser.find(x=>x.webSocket == ws) ; 
@@ -70,13 +83,19 @@ wss.on("connection",(ws,request)=>{
 
         if(parsedData.type=="chat"){ 
             const message = parsedData.message ; 
-            await prisma.chat.create({
-                data:{
-                    roomId , 
-                    message ,
-                    userId
+            if (!isNaN(roomId)) {
+                try {
+                    await prisma.chat.create({
+                        data:{
+                            roomId , 
+                            message ,
+                            userId: Number(userId)
+                        }
+                    });
+                } catch (err) {
+                    console.error("Error saving chat in DB:", err);
                 }
-            })
+            }
             allUser.forEach(user=>{
                 if(user.roomId==roomId){ 
                     user.webSocket.send(JSON.stringify({ 

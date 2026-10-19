@@ -83,9 +83,30 @@ export default function DashboardPage() {
     }
   };
 
-  const handleCreateOrJoin = (e: React.FormEvent) => {
+  const handleCreateOrJoin = async (e: React.FormEvent) => {
     e.preventDefault();
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     const target = newRoomInput.trim() || `room-${Date.now().toString().slice(-4)}`;
+
+    if (!token) {
+      router.push(`/signin?redirect=/canvas/${encodeURIComponent(target)}`);
+      return;
+    }
+
+    try {
+      const HTTP_URL = process.env.NEXT_PUBLIC_HTTP_URL || "http://localhost:3001";
+      await fetch(`${HTTP_URL}/api/room/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+        },
+        body: JSON.stringify({ slug: target }),
+      });
+    } catch (err) {
+      console.warn("Could not register room on server:", err);
+    }
+
     router.push(`/canvas/${encodeURIComponent(target)}`);
   };
 

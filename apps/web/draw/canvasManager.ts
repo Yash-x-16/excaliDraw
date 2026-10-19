@@ -1,6 +1,7 @@
 
 import { shape } from "./shapesTypes"
 import { tools } from "./shapesTypes" 
+import { getExistingShapes } from "./http"
 
 export  class canvasManager { 
 
@@ -8,7 +9,7 @@ export  class canvasManager {
     private ctx :CanvasRenderingContext2D 
     private roomId:string 
     private existingShapes:shape[] ; 
-    // private socket:WebSocket 
+    private socket:WebSocket | null = null  
     private clicked:boolean 
     private startX = 0  
     private isDragging = false  
@@ -17,6 +18,7 @@ export  class canvasManager {
     private endX = 0 ; 
     private endY = 0 ;  
     private currentTool :tools = "circle" ; 
+    private currentColor :string = "#ffffff" ; 
     private circleRadius =0  
     private pencilPoints:{x:number,y:number}[]= [] ; 
 
@@ -27,21 +29,76 @@ export  class canvasManager {
         this.existingShapes = [] ;  
         this.init() ;  
         this.initHandlers() ;  
-        // this.socket = socket ; 
         this.mouseHandlers() 
         this.clicked  = false  
     }
 
-    init(){
-        //  this.existingShapes = getExistingShape()
+    async init(){
+        try {
+            this.existingShapes = await getExistingShapes(this.roomId);
+            this.clearCanvas();
+        } catch (error) {
+            console.error("Error loading existing shapes:", error);
+        }
     } 
 
     initHandlers(){
-        //socket logic here
+        if (typeof window === "undefined") return;
+        const token = localStorage.getItem("token") || "";
+        const wsUrl = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080";
+
+        try {
+            this.socket = new WebSocket(`${wsUrl}${token ? `?token=${token}` : ""}`);
+
+            this.socket.onopen = () => {
+                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                    this.socket.send(JSON.stringify({
+                        type: "join",
+                        roomId: this.roomId
+                    }));
+                }
+            };
+
+            this.socket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.message) {
+                        const parsedShape = typeof data.message === "string" ? JSON.parse(data.message) : data.message;
+                        if (parsedShape && parsedShape.type) {
+                            if (parsedShape.id && this.existingShapes.some(s => s.id === parsedShape.id)) {
+                                return;
+                            }
+                            this.existingShapes.push(parsedShape);
+                            this.clearCanvas();
+                        }
+                    }
+                } catch (err) {
+                    console.error("Error processing websocket message:", err);
+                }
+            };
+
+            this.socket.onerror = (err) => {
+                console.warn("WebSocket error:", err);
+            };
+
+            this.socket.onclose = () => {
+                console.log("WebSocket disconnected from room:", this.roomId);
+            };
+        } catch (err) {
+            console.warn("Could not initialize WebSocket:", err);
+        }
     } 
 
     setTool(tool:tools){
         this.currentTool=tool ; 
+    }
+
+    setColor(color:string){
+        this.currentColor = color ;
+    }
+
+    getColor(): string {
+        return this.currentColor;
     }
 
 
@@ -53,22 +110,21 @@ export  class canvasManager {
         this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height) ; 
 
         this.existingShapes.map((shape)=>{
+                const color = shape.color || "rgb(255,255,255)";
                 if(shape.type==="rect"){
-                    
-                    this.ctx.strokeStyle="rgb(255,255,255)"
+                    this.ctx.strokeStyle = color;
                     this.ctx.strokeRect(shape.x,shape.y,shape.width,shape.height) ;  
 
                 }else if(shape.type==="circle"){
-
-                    this.createCircle(shape.startX,shape.startY,shape.radius) ; 
+                    this.createCircle(shape.startX,shape.startY,shape.radius, color) ; 
                 }else if(shape.type==="line"){
-                    this.createLine(shape.startX,shape.startY,shape.endX,shape.endY) ; 
+                    this.createLine(shape.startX,shape.startY,shape.endX,shape.endY, color) ; 
                 }else if (shape.type==="pencil"){
-                    this.createSketch(shape.points) ; 
+                    this.createSketch(shape.points, color) ; 
                 }else if (shape.type==="arrow"){
-                    this.createArrow(shape.startX,shape.startY,shape.endX,shape.endY)
+                    this.createArrow(shape.startX,shape.startY,shape.endX,shape.endY, color)
                 }else if (shape.type==="text"){
-                    this.createText(shape.x,shape.y,shape.text)
+                    this.createText(shape.x,shape.y,shape.text, color)
                 }
             })
     }  
@@ -107,57 +163,73 @@ export  class canvasManager {
     }
 
     mouseUpHandler =  (e:MouseEvent)=>{
+           if (this.currentTool === "text") {
+                this.clicked = false;
+                return;
+           }
            this.clicked = false  
            this.isDragging = false   
            let shape:shape | null = null 
-          this.pencilPoints.push({x:e.clientX,y:e.clientY}) 
+           this.pencilPoints.push({x:e.clientX,y:e.clientY}) 
            let x = e.clientX -  this.startX ; 
            let y = e.clientY -  this.startY ; 
+           const shapeId = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+
            if(this.currentTool=="rect") {
                  shape =    {
+                    id: shapeId,
                     type:"rect" , 
                     x: this.startX, 
                     y: this.startY , 
                     width:x , 
-                    height:y
+                    height:y,
+                    color: this.currentColor
                 }
            }
            
            else if (this.currentTool=="circle"){  
             let radius =this.circleRadius
                 shape = {
+                    id: shapeId,
                     type:"circle" ,  
                     startX:this.startX , 
                     startY:this.startY,
-                    radius
+                    radius,
+                    color: this.currentColor
                 }
            } 
            
            else if (this.currentTool==="line"){
             shape = {
+                id: shapeId,
                 type:"line" , 
                 startX:this.startX , 
                 startY:this.startY , 
                 endX:this.endX , 
-                endY:this.endY
+                endY:this.endY,
+                color: this.currentColor
             }
            }
            
            else if (this.currentTool==="pencil"){
             shape ={
+                id: shapeId,
                 type:"pencil" , 
-                points:this.pencilPoints 
+                points:this.pencilPoints,
+                color: this.currentColor
             } 
             this.pencilPoints=[] ; 
            } 
            
            else if (this.currentTool==="arrow"){
             shape = {
+                id: shapeId,
                 type:"arrow" , 
                 startX :this.startX, 
                 startY:this.startY , 
                 endX:this.endX , 
-                endY:this.endY 
+                endY:this.endY,
+                color: this.currentColor
             }
            }
            if(!shape){
@@ -165,6 +237,14 @@ export  class canvasManager {
            } 
            
            this.existingShapes.push(shape)
+
+           if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+               this.socket.send(JSON.stringify({
+                   type: "chat",
+                   roomId: this.roomId,
+                   message: JSON.stringify(shape)
+               }));
+           }
     }
 
     mousemoveHandler = (e:MouseEvent)=>{
@@ -173,26 +253,25 @@ export  class canvasManager {
           this.endX = e.clientX ; 
           this.endY = e.clientY ;  
           if(this.clicked && this.currentTool==="rect"){ 
-            console.log("clicked is true ")
              this.clearCanvas() ;   
-             this.ctx.lineWidth = 2;
-             this.ctx.strokeStyle = "rgb(255,255,255)"
+             this.ctx.lineWidth = 3;
+             this.ctx.strokeStyle = this.currentColor;
              this.ctx.strokeRect(this.startX,this.startY,x,y) ;   
          }
          else if(this.clicked && this.currentTool==="circle"){ 
             this.clearCanvas() ;  
             this.circleRadius =  Math.abs(Math.sqrt(x*x +y*y)) ;  
-            this.createCircle(this.startX,this.startY,this.circleRadius) ; 
+            this.createCircle(this.startX,this.startY,this.circleRadius, this.currentColor) ; 
          } else if(this.clicked && this.currentTool==="line"){
            this.clearCanvas()  ; 
-           this.createLine(this.startX,this.startY,this.endX,this.endY) ; 
+           this.createLine(this.startX,this.startY,this.endX,this.endY, this.currentColor) ; 
          } else if(this.clicked && this.currentTool==="pencil"){ 
             this.clearCanvas()  
             this.pencilPoints.push({x:e.clientX,y:e.clientY}) ; 
-            this.createSketch(this.pencilPoints) ; 
+            this.createSketch(this.pencilPoints, this.currentColor) ; 
          } else if (this.clicked && this.currentTool==="arrow"){
             this.clearCanvas() 
-            this.createArrow(this.startX,this.startY,this.endX,this.endY) ;   
+            this.createArrow(this.startX,this.startY,this.endX,this.endY, this.currentColor) ;   
         } 
 
         if(this.isDragging){ 
@@ -246,7 +325,19 @@ export  class canvasManager {
     } 
 
     destroy (){ 
-
+        if (this.socket) {
+            try {
+                if (this.socket.readyState === WebSocket.OPEN) {
+                    this.socket.send(JSON.stringify({
+                        type: "leave",
+                        roomId: this.roomId
+                    }));
+                }
+                this.socket.close();
+            } catch (e) {
+                console.error("Error closing websocket", e);
+            }
+        }
         this.canvas.removeEventListener("mousedown",this.mouseDownHandler) ; 
         this.canvas.removeEventListener("mouseup",this.mouseUpHandler) ; 
         this.canvas.removeEventListener("mousemove",this.mousemoveHandler)  ; 
@@ -256,28 +347,32 @@ export  class canvasManager {
         }
     } 
 
-    private createCircle(startX:number,startY:number,radius:number){
+    private createCircle(startX:number,startY:number,radius:number, color: string = "white"){
             this.ctx.save() 
             this.ctx.beginPath()   
-            this.ctx.strokeStyle ="white"  
+            this.ctx.strokeStyle = color  
             this.ctx.fillStyle="transparent"
-            this.ctx.lineWidth=4
+            this.ctx.lineWidth=3
             this.ctx.arc(startX,startY,radius,0,Math.PI*2) ;  
             this.ctx.stroke()
-            this.ctx.fill() 
             this.ctx.restore()
     } 
 
-    private createLine (startX:number,startY:number,endX:number,endY:number){
+    private createLine (startX:number,startY:number,endX:number,endY:number, color: string = "white"){
+        this.ctx.save()
         this.ctx.beginPath() 
         this.ctx.lineCap="round"
         this.ctx.moveTo(startX,startY) ; 
         this.ctx.lineTo(endX,endY) ;   
-        this.ctx.strokeStyle="white"   
+        this.ctx.strokeStyle=color   
+        this.ctx.lineWidth=3
         this.ctx.stroke()
+        this.ctx.restore()
     } 
 
-    private createSketch(points:{x:number,y:number}[]){
+    private createSketch(points:{x:number,y:number}[], color: string = "white"){
+        if (points.length === 0) return;
+        this.ctx.save()
         this.ctx.beginPath()
         this.ctx.lineCap="round" 
         this.ctx.lineJoin="round" ; 
@@ -285,23 +380,26 @@ export  class canvasManager {
         for(let i =1 ; i<points.length;i++){
              this.ctx.lineTo(points[i].x,points[i].y) ; 
         }
-        this.ctx.strokeStyle="white"   
+        this.ctx.strokeStyle=color   
+        this.ctx.lineWidth=3
         this.ctx.stroke()
+        this.ctx.restore()
     }  
 
-    private createArrow(startX:number,startY:number,endX:number,endY:number,){ 
-        
+    private createArrow(startX:number,startY:number,endX:number,endY:number, color: string = "white"){ 
         const angle = Math.atan2(endY - startY, endX - startX);
         const headLength = 15 
         const headAngle = Math.PI /6 
-        this.ctx.strokeStyle ="white"
+        this.ctx.save()
+        this.ctx.strokeStyle = color
+        this.ctx.lineWidth = 3
 
         this.ctx.beginPath();
         this.ctx.moveTo(startX, startY);
         this.ctx.lineTo(endX, endY);
 
-        this. ctx.moveTo(endX, endY);
-        this. ctx.lineTo(
+        this.ctx.moveTo(endX, endY);
+        this.ctx.lineTo(
             endX - headLength * Math.cos(angle - headAngle),
             endY - headLength * Math.sin(angle - headAngle)
         );
@@ -313,11 +411,12 @@ export  class canvasManager {
         );
 
         this.ctx.stroke();
+        this.ctx.restore()
     }
 
-    private createText(x: number, y: number, text: string) {
+    private createText(x: number, y: number, text: string, color: string = "white") {
         this.ctx.save();
-        this.ctx.fillStyle = "white";
+        this.ctx.fillStyle = color;
         this.ctx.font = "20px sans-serif";
         this.ctx.textBaseline = "top";
         const lines = text.split("\n");
@@ -341,10 +440,10 @@ export  class canvasManager {
         textarea.style.left = `${x}px`;
         textarea.style.top = `${y}px`;
         textarea.style.background = "transparent";
-        textarea.style.color = "white";
+        textarea.style.color = this.currentColor;
         textarea.style.font = "20px sans-serif";
         textarea.style.lineHeight = "24px";
-        textarea.style.border = "1px dashed rgba(255, 255, 255, 0.6)";
+        textarea.style.border = `1px dashed ${this.currentColor}`;
         textarea.style.outline = "none";
         textarea.style.padding = "2px 4px";
         textarea.style.margin = "0";
@@ -369,13 +468,25 @@ export  class canvasManager {
             isCommitted = true;
             const textValue = textarea.value.trim();
             if (textValue.length > 0) {
-                this.existingShapes.push({
+                const shapeId = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+                const textShape: shape = {
+                    id: shapeId,
                     type: "text",
                     x,
                     y,
-                    text: textarea.value
-                });
+                    text: textarea.value,
+                    color: this.currentColor
+                };
+                this.existingShapes.push(textShape);
                 this.clearCanvas();
+
+                if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                    this.socket.send(JSON.stringify({
+                        type: "chat",
+                        roomId: this.roomId,
+                        message: JSON.stringify(textShape)
+                    }));
+                }
             }
             if (textarea.parentNode) {
                 textarea.parentNode.removeChild(textarea);

@@ -32,13 +32,43 @@ export default function SignInPage() {
 
     setIsLoading(true);
 
+    const redirectUrl = typeof window !== "undefined" 
+      ? (new URLSearchParams(window.location.search).get("redirect") || "/dashboard")
+      : "/dashboard";
+
+    try {
+      const HTTP_URL = process.env.NEXT_PUBLIC_HTTP_URL || "http://localhost:3001";
+      const res = await fetch(`${HTTP_URL}/api/auth/signin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: identifier, password }),
+      });
+      const data = await res.json();
+      if (res.ok && data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify({ email: identifier }));
+        setIsLoading(false);
+        setSuccess(true);
+        setTimeout(() => {
+          router.push(redirectUrl);
+        }, 500);
+        return;
+      } else if (!res.ok && data.error) {
+        setError(typeof data.error === "string" ? data.error : "Invalid credentials");
+        setIsLoading(false);
+        return;
+      }
+    } catch (err) {
+      console.warn("Backend auth unavailable, creating local session:", err);
+    }
+
+    localStorage.setItem("token", "local-token-" + Date.now());
+    localStorage.setItem("user", JSON.stringify({ email: identifier }));
+    setIsLoading(false);
+    setSuccess(true);
     setTimeout(() => {
-      setIsLoading(false);
-      setSuccess(true);
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 700);
-    }, 600);
+      router.push(redirectUrl);
+    }, 500);
   };
 
   return (

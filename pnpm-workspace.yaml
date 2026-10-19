@@ -6,6 +6,7 @@ allowBuilds:
   bcrypt: false
   esbuild: false
   prisma: false
+  unrs-resolver: set this to true or false
 minimumReleaseAgeExclude:
   - '@turbo/darwin-64@2.11.3'
   - '@turbo/darwin-arm64@2.11.3'

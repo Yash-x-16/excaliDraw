@@ -72,3 +72,28 @@ export const deleteRoom = async(req:Request,res:Response) => {
         })
     }
 }
+
+export const getChats = async(req: Request, res: Response) => {
+    try {
+        const { roomId } = req.params;
+        let numericRoomId = Number(roomId);
+        if (isNaN(numericRoomId)) {
+            const room = await prisma.room.findUnique({
+                where: { slug: roomId }
+            });
+            if (!room) {
+                return res.status(200).json({ message: [] });
+            }
+            numericRoomId = room.roomId;
+        }
+        const chats = await prisma.chat.findMany({
+            where: { roomId: numericRoomId },
+            take: 500,
+            orderBy: { chatId: "asc" }
+        });
+        return res.status(200).json({ message: chats });
+    } catch(error) {
+        console.log("error in getChats", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
