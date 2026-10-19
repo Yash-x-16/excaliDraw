@@ -181,16 +181,6 @@ export default function SignInPage() {
           Sign up
         </Link>
       </div>
-
-      <div className="mt-4 pt-4 border-t border-zinc-800/80 text-center">
-        <Link
-          href="/dashboard"
-          className="text-xs text-zinc-400 hover:text-zinc-200 transition inline-flex items-center gap-1"
-        >
-          <span>Skip to signed-in workspace preview</span>
-          <ArrowRightIcon className="w-3 h-3" />
-        </Link>
-      </div>
     </AuthLayout>
   );
 }
