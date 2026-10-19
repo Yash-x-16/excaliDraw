@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "collabrativeDraw - Real-time Collaborative Canvas",
-  description: "Collaborative whiteboard where two or more users can create and interact with shapes simultaneously in real time.",
+  title: "collabrative draw - Online Whiteboard Made Simple",
+  description: "Virtual collaborative whiteboard for creating simple hand-drawn style diagrams, illustrations & flowcharts. No sign-up. Just draw.",
 };
 
 export default function RootLayout({
