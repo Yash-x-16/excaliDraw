@@ -79,7 +79,7 @@ export const getChats = async(req: Request, res: Response) => {
         let numericRoomId = Number(roomId);
         if (isNaN(numericRoomId)) {
             const room = await prisma.room.findUnique({
-                where: { slug: roomId }
+                where: {  roomId  :numericRoomId}
             });
             if (!room) {
                 return res.status(200).json({ message: [] });
